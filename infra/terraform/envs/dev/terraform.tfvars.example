@@ -1,0 +1,6 @@
+project_id   = "younique-dev"
+region       = "europe-west1"
+network      = "projects/younique-dev/global/networks/younique"
+api_image    = "europe-west1-docker.pkg.dev/younique-shared/app/api:dev"
+worker_image = "europe-west1-docker.pkg.dev/younique-shared/app/worker:dev"
+web_image    = "europe-west1-docker.pkg.dev/younique-shared/app/web:dev"

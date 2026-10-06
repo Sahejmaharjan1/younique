@@ -1,0 +1,39 @@
+name: setup-timing
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  fifteen-minutes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Time clone-to-health
+        run: |
+          start=$(date +%s)
+          make setup
+          docker compose up -d --wait postgres
+          uv run --directory backend alembic upgrade head
+          uv run --directory backend uvicorn younique.main_api:app --host 127.0.0.1 --port 8000 &
+          for i in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8000/healthz && break
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:8000/healthz
+          end=$(date +%s)
+          elapsed=$((end - start))
+          echo "elapsed_seconds=$elapsed"
+          if [ "$elapsed" -gt 900 ]; then
+            echo "setup exceeded 15 minutes"
+            exit 1
+          fi

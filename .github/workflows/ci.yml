@@ -1,0 +1,170 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      backend: ${{ steps.filter.outputs.backend }}
+      connectors: ${{ steps.filter.outputs.connectors }}
+      agents: ${{ steps.filter.outputs.agents }}
+      infra: ${{ steps.filter.outputs.infra }}
+      docs: ${{ steps.filter.outputs.docs }}
+      migrations: ${{ steps.filter.outputs.migrations }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+              - 'packages/ui/**'
+              - 'packages/api-client/**'
+            backend:
+              - 'backend/**'
+              - 'openapi.json'
+            connectors:
+              - 'connectors/**'
+            agents:
+              - 'backend/src/younique/agents/**'
+              - 'backend/src/younique/pipelines/**'
+            infra:
+              - 'infra/**'
+            docs:
+              - 'docs/**'
+              - '**/*.md'
+            migrations:
+              - 'backend/migrations/**'
+              - 'backend/src/younique/models/**'
+
+  lint-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: DCO
+        run: |
+          git log --format='%H %s%n%b' origin/${{ github.base_ref || 'main' }}..HEAD | grep -q "Signed-off-by:" || {
+            echo "Commits must contain Signed-off-by (DCO)."
+            exit 1
+          }
+
+  backend-lint-types:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.connectors == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend ruff check src tests
+      - run: uv run --directory backend ruff format --check src tests
+      - run: uv run --directory backend mypy src
+      - run: python3 scripts/check_forbidden_imports.py
+      - run: python3 scripts/check_money.py
+      - run: python3 scripts/check_routes.py
+      - run: python3 scripts/check_migration.py
+
+  backend-unit:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend pytest tests/unit tests/agents tests/authz
+
+  backend-authz:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.connectors == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend pytest tests/authz
+
+  connector-contract:
+    needs: changes
+    if: needs.changes.outputs.connectors == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: python3 scripts/check_forbidden_imports.py
+      - run: uv run --directory backend pytest tests/agents/test_graph.py -q
+
+  migration-check:
+    needs: changes
+    if: needs.changes.outputs.migrations == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/check_migration.py
+
+  openapi-drift:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend python -m younique.scripts.export_openapi
+      - run: git diff --exit-code openapi.json
+
+  web-lint-types:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --filter @younique/web lint
+      - run: pnpm --filter @younique/web typecheck
+
+  terraform-validate:
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=infra/terraform/envs/dev init -backend=false
+      - run: terraform -chdir=infra/terraform/envs/dev validate
+
+  docs-build:
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: test -f docs/site/mint.json && test -f README.md
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend pip-audit || true
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python, javascript
+      - uses: github/codeql-action/analyze@v3

@@ -1,0 +1,13 @@
+{
+  "name": "Younique",
+  "$schema": "https://mintlify.com/schema.json",
+  "navigation": [
+    { "group": "Getting started", "pages": ["getting-started/quickstart"] },
+    { "group": "Guides", "pages": ["guides/send-email"] },
+    { "group": "Connectors", "pages": ["connectors/overview"] },
+    { "group": "API reference", "pages": ["api-reference/overview"] },
+    { "group": "Self-hosting", "pages": ["self-hosting/local"] },
+    { "group": "Architecture", "pages": ["architecture/overview"] },
+    { "group": "Contributing", "pages": ["contributing/recipes"] }
+  ]
+}

@@ -1,0 +1,50 @@
+version = 1
+SPDX-PackageName = "younique"
+SPDX-PackageSupplier = "Younique Contributors"
+SPDX-PackageDownloadLocation = "https://github.com/younique/younique"
+
+[[annotations]]
+path = [
+  "docs/**",
+  "**/*.md",
+  "LICENSE",
+  "LICENSE-APACHE",
+  "CHANGELOG.md",
+  "AGENTS.md",
+  "CLAUDE.md",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Younique Contributors"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = [
+  "packages/api-client/**",
+  "packages/sdk/**",
+  "connectors/_sdk/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Younique Contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+  "apps/**",
+  "backend/**",
+  "connectors/smtp/**",
+  "connectors/gmail/**",
+  "connectors/google_sheets/**",
+  "connectors/google_drive/**",
+  "connectors/http/**",
+  "connectors/webhook/**",
+  "infra/**",
+  "scripts/**",
+  "packages/ui/**",
+  "packages/model-registry/**",
+  "packages/tsconfig/**",
+  "packages/eslint-config/**",
+  ".github/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Younique Contributors"
+SPDX-License-Identifier = "AGPL-3.0-only"

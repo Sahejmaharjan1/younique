@@ -1,0 +1,56 @@
+:root {
+  color-scheme: light;
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+  background: #f6f3ee;
+  color: #1c1915;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar,
+.panel {
+  padding: 1rem;
+}
+
+.sidebar {
+  background: #ebe4d8;
+}
+
+.composer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.composer textarea {
+  flex: 1;
+  min-height: 3rem;
+}
+
+.card {
+  border: 1px solid #d9d0c3;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.flagged {
+  background: #fff4d6;
+}

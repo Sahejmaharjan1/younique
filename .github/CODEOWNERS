@@ -1,0 +1,6 @@
+* @younique/maintainers
+/backend/src/younique/authz/ @younique/security
+/backend/src/younique/crypto/ @younique/security
+/connectors/ @younique/connectors
+/infra/ @younique/infra
+/docs/adr/ @younique/maintainers

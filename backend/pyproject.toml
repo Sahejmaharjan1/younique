@@ -1,0 +1,96 @@
+[project]
+name = "younique"
+version = "0.1.0"
+description = "Younique API and worker"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115.6",
+  "uvicorn[standard]>=0.34.0",
+  "sqlalchemy[asyncio]>=2.0.36",
+  "asyncpg>=0.30.0",
+  "alembic>=1.14.0",
+  "pydantic>=2.10.4",
+  "pydantic-settings>=2.7.0",
+  "structlog>=24.4.0",
+  "cryptography>=44.0.0",
+  "httpx>=0.28.1",
+  "pyyaml>=6.0.2",
+  "uuid6>=2024.7.10",
+  "argon2-cffi>=23.1.0",
+  "email-validator>=2.2.0",
+  "opentelemetry-api>=1.29.0",
+  "opentelemetry-sdk>=1.29.0",
+  "opentelemetry-instrumentation-fastapi>=0.50b0",
+  "opentelemetry-instrumentation-sqlalchemy>=0.50b0",
+  "opentelemetry-instrumentation-httpx>=0.50b0",
+  "langgraph>=0.2.60",
+  "langgraph-checkpoint>=2.0.0",
+  "langgraph-checkpoint-postgres>=2.0.0",
+  "psycopg[binary]>=3.2.0",
+  "aiosmtplib>=3.0.2",
+  "younique-sdk",
+]
+
+[tool.uv.sources]
+younique-sdk = { path = "../connectors/_sdk", editable = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3.4",
+  "pytest-asyncio>=0.25.0",
+  "testcontainers[postgres]>=4.9.0",
+  "ruff>=0.8.4",
+  "mypy>=1.14.0",
+  "aiosqlite>=0.20.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["src/younique"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "T20", "TID"]
+ignore = ["E501"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"fastapi.HTTPException".msg = "Raise a ProblemDetail subclass"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["T20"]
+"src/younique/api/**" = ["B008"]
+"src/younique/scripts/**" = ["T201"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["younique"]
+mypy_path = "src"
+plugins = []
+warn_unused_ignores = true
+disallow_any_generics = true
+no_implicit_reexport = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = ["langgraph.*", "langgraph_checkpoint.*", "opentelemetry.*", "testcontainers.*", "younique_sdk", "younique_sdk.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

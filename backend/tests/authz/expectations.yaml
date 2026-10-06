@@ -1,0 +1,7338 @@
+principals:
+- owner
+- admin
+- member
+- guest
+- non_member
+- share_link_viewer
+- share_link_commenter
+- anonymous
+- pat_limited_scope
+- mcp_token
+- agent_acting_for_member
+- archived_member
+- revoked_session
+resources:
+- own_chat
+- other_member_chat
+- other_workspace_chat
+- shared_chat
+- archived_chat
+- artifact_clean
+- artifact_infected
+- agent
+- pipeline
+- personal_memory_set
+- workspace_memory_set
+- connection
+- provider_key
+- audit_log
+- budget
+- mcp_token
+- tool
+actions:
+- read
+- list
+- create
+- update
+- delete
+- share
+- run
+- execute_tool
+- read_secret
+- rotate_secret
+- decide_approval
+cells:
+  owner|own_chat|read:
+    status: 200
+    code: ok
+  owner|own_chat|list:
+    status: 200
+    code: ok
+  owner|own_chat|create:
+    status: 200
+    code: ok
+  owner|own_chat|update:
+    status: 200
+    code: ok
+  owner|own_chat|delete:
+    status: 200
+    code: ok
+  owner|own_chat|share:
+    status: 200
+    code: ok
+  owner|own_chat|run:
+    status: 200
+    code: ok
+  owner|own_chat|execute_tool:
+    status: 200
+    code: ok
+  owner|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  owner|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|own_chat|decide_approval:
+    status: 200
+    code: ok
+  owner|other_member_chat|read:
+    status: 200
+    code: ok
+  owner|other_member_chat|list:
+    status: 200
+    code: ok
+  owner|other_member_chat|create:
+    status: 200
+    code: ok
+  owner|other_member_chat|update:
+    status: 200
+    code: ok
+  owner|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  owner|other_member_chat|share:
+    status: 200
+    code: ok
+  owner|other_member_chat|run:
+    status: 200
+    code: ok
+  owner|other_member_chat|execute_tool:
+    status: 200
+    code: ok
+  owner|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  owner|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|other_member_chat|decide_approval:
+    status: 200
+    code: ok
+  owner|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  owner|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  owner|shared_chat|read:
+    status: 200
+    code: ok
+  owner|shared_chat|list:
+    status: 200
+    code: ok
+  owner|shared_chat|create:
+    status: 200
+    code: ok
+  owner|shared_chat|update:
+    status: 200
+    code: ok
+  owner|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  owner|shared_chat|share:
+    status: 200
+    code: ok
+  owner|shared_chat|run:
+    status: 200
+    code: ok
+  owner|shared_chat|execute_tool:
+    status: 200
+    code: ok
+  owner|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  owner|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|shared_chat|decide_approval:
+    status: 200
+    code: ok
+  owner|archived_chat|read:
+    status: 410
+    code: archived
+  owner|archived_chat|list:
+    status: 410
+    code: archived
+  owner|archived_chat|create:
+    status: 410
+    code: archived
+  owner|archived_chat|update:
+    status: 410
+    code: archived
+  owner|archived_chat|delete:
+    status: 410
+    code: archived
+  owner|archived_chat|share:
+    status: 410
+    code: archived
+  owner|archived_chat|run:
+    status: 410
+    code: archived
+  owner|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  owner|archived_chat|read_secret:
+    status: 410
+    code: archived
+  owner|archived_chat|rotate_secret:
+    status: 410
+    code: archived
+  owner|archived_chat|decide_approval:
+    status: 410
+    code: archived
+  owner|artifact_clean|read:
+    status: 200
+    code: ok
+  owner|artifact_clean|list:
+    status: 200
+    code: ok
+  owner|artifact_clean|create:
+    status: 200
+    code: ok
+  owner|artifact_clean|update:
+    status: 200
+    code: ok
+  owner|artifact_clean|delete:
+    status: 200
+    code: ok
+  owner|artifact_clean|share:
+    status: 200
+    code: ok
+  owner|artifact_clean|run:
+    status: 200
+    code: ok
+  owner|artifact_clean|execute_tool:
+    status: 200
+    code: ok
+  owner|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  owner|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|artifact_clean|decide_approval:
+    status: 200
+    code: ok
+  owner|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  owner|artifact_infected|list:
+    status: 200
+    code: ok
+  owner|artifact_infected|create:
+    status: 200
+    code: ok
+  owner|artifact_infected|update:
+    status: 200
+    code: ok
+  owner|artifact_infected|delete:
+    status: 200
+    code: ok
+  owner|artifact_infected|share:
+    status: 200
+    code: ok
+  owner|artifact_infected|run:
+    status: 200
+    code: ok
+  owner|artifact_infected|execute_tool:
+    status: 200
+    code: ok
+  owner|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  owner|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|artifact_infected|decide_approval:
+    status: 200
+    code: ok
+  owner|agent|read:
+    status: 200
+    code: ok
+  owner|agent|list:
+    status: 200
+    code: ok
+  owner|agent|create:
+    status: 200
+    code: ok
+  owner|agent|update:
+    status: 200
+    code: ok
+  owner|agent|delete:
+    status: 200
+    code: ok
+  owner|agent|share:
+    status: 200
+    code: ok
+  owner|agent|run:
+    status: 200
+    code: ok
+  owner|agent|execute_tool:
+    status: 200
+    code: ok
+  owner|agent|read_secret:
+    status: 403
+    code: permission_denied
+  owner|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|agent|decide_approval:
+    status: 200
+    code: ok
+  owner|pipeline|read:
+    status: 200
+    code: ok
+  owner|pipeline|list:
+    status: 200
+    code: ok
+  owner|pipeline|create:
+    status: 200
+    code: ok
+  owner|pipeline|update:
+    status: 200
+    code: ok
+  owner|pipeline|delete:
+    status: 200
+    code: ok
+  owner|pipeline|share:
+    status: 200
+    code: ok
+  owner|pipeline|run:
+    status: 200
+    code: ok
+  owner|pipeline|execute_tool:
+    status: 200
+    code: ok
+  owner|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  owner|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|pipeline|decide_approval:
+    status: 200
+    code: ok
+  owner|personal_memory_set|read:
+    status: 200
+    code: ok
+  owner|personal_memory_set|list:
+    status: 200
+    code: ok
+  owner|personal_memory_set|create:
+    status: 200
+    code: ok
+  owner|personal_memory_set|update:
+    status: 200
+    code: ok
+  owner|personal_memory_set|delete:
+    status: 200
+    code: ok
+  owner|personal_memory_set|share:
+    status: 200
+    code: ok
+  owner|personal_memory_set|run:
+    status: 200
+    code: ok
+  owner|personal_memory_set|execute_tool:
+    status: 200
+    code: ok
+  owner|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  owner|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|personal_memory_set|decide_approval:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|read:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|list:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|create:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|update:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  owner|workspace_memory_set|share:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|run:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|execute_tool:
+    status: 200
+    code: ok
+  owner|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  owner|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|workspace_memory_set|decide_approval:
+    status: 200
+    code: ok
+  owner|connection|read:
+    status: 200
+    code: ok
+  owner|connection|list:
+    status: 200
+    code: ok
+  owner|connection|create:
+    status: 200
+    code: ok
+  owner|connection|update:
+    status: 200
+    code: ok
+  owner|connection|delete:
+    status: 200
+    code: ok
+  owner|connection|share:
+    status: 200
+    code: ok
+  owner|connection|run:
+    status: 200
+    code: ok
+  owner|connection|execute_tool:
+    status: 200
+    code: ok
+  owner|connection|read_secret:
+    status: 403
+    code: permission_denied
+  owner|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|connection|decide_approval:
+    status: 200
+    code: ok
+  owner|provider_key|read:
+    status: 200
+    code: ok
+  owner|provider_key|list:
+    status: 200
+    code: ok
+  owner|provider_key|create:
+    status: 200
+    code: ok
+  owner|provider_key|update:
+    status: 200
+    code: ok
+  owner|provider_key|delete:
+    status: 200
+    code: ok
+  owner|provider_key|share:
+    status: 200
+    code: ok
+  owner|provider_key|run:
+    status: 200
+    code: ok
+  owner|provider_key|execute_tool:
+    status: 200
+    code: ok
+  owner|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  owner|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|provider_key|decide_approval:
+    status: 200
+    code: ok
+  owner|audit_log|read:
+    status: 200
+    code: ok
+  owner|audit_log|list:
+    status: 200
+    code: ok
+  owner|audit_log|create:
+    status: 200
+    code: ok
+  owner|audit_log|update:
+    status: 200
+    code: ok
+  owner|audit_log|delete:
+    status: 403
+    code: permission_denied
+  owner|audit_log|share:
+    status: 403
+    code: permission_denied
+  owner|audit_log|run:
+    status: 403
+    code: permission_denied
+  owner|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  owner|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  owner|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  owner|budget|read:
+    status: 200
+    code: ok
+  owner|budget|list:
+    status: 200
+    code: ok
+  owner|budget|create:
+    status: 200
+    code: ok
+  owner|budget|update:
+    status: 200
+    code: ok
+  owner|budget|delete:
+    status: 403
+    code: permission_denied
+  owner|budget|share:
+    status: 403
+    code: permission_denied
+  owner|budget|run:
+    status: 403
+    code: permission_denied
+  owner|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  owner|budget|read_secret:
+    status: 403
+    code: permission_denied
+  owner|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  owner|mcp_token|read:
+    status: 200
+    code: ok
+  owner|mcp_token|list:
+    status: 200
+    code: ok
+  owner|mcp_token|create:
+    status: 200
+    code: ok
+  owner|mcp_token|update:
+    status: 200
+    code: ok
+  owner|mcp_token|delete:
+    status: 200
+    code: ok
+  owner|mcp_token|share:
+    status: 200
+    code: ok
+  owner|mcp_token|run:
+    status: 200
+    code: ok
+  owner|mcp_token|execute_tool:
+    status: 200
+    code: ok
+  owner|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  owner|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|mcp_token|decide_approval:
+    status: 200
+    code: ok
+  owner|tool|read:
+    status: 200
+    code: ok
+  owner|tool|list:
+    status: 200
+    code: ok
+  owner|tool|create:
+    status: 200
+    code: ok
+  owner|tool|update:
+    status: 200
+    code: ok
+  owner|tool|delete:
+    status: 403
+    code: permission_denied
+  owner|tool|share:
+    status: 200
+    code: ok
+  owner|tool|run:
+    status: 200
+    code: ok
+  owner|tool|execute_tool:
+    status: 200
+    code: ok
+  owner|tool|read_secret:
+    status: 403
+    code: permission_denied
+  owner|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  owner|tool|decide_approval:
+    status: 200
+    code: ok
+  admin|own_chat|read:
+    status: 200
+    code: ok
+  admin|own_chat|list:
+    status: 200
+    code: ok
+  admin|own_chat|create:
+    status: 200
+    code: ok
+  admin|own_chat|update:
+    status: 200
+    code: ok
+  admin|own_chat|delete:
+    status: 200
+    code: ok
+  admin|own_chat|share:
+    status: 200
+    code: ok
+  admin|own_chat|run:
+    status: 200
+    code: ok
+  admin|own_chat|execute_tool:
+    status: 200
+    code: ok
+  admin|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  admin|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|own_chat|decide_approval:
+    status: 200
+    code: ok
+  admin|other_member_chat|read:
+    status: 200
+    code: ok
+  admin|other_member_chat|list:
+    status: 200
+    code: ok
+  admin|other_member_chat|create:
+    status: 200
+    code: ok
+  admin|other_member_chat|update:
+    status: 200
+    code: ok
+  admin|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  admin|other_member_chat|share:
+    status: 200
+    code: ok
+  admin|other_member_chat|run:
+    status: 200
+    code: ok
+  admin|other_member_chat|execute_tool:
+    status: 200
+    code: ok
+  admin|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  admin|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|other_member_chat|decide_approval:
+    status: 200
+    code: ok
+  admin|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  admin|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  admin|shared_chat|read:
+    status: 200
+    code: ok
+  admin|shared_chat|list:
+    status: 200
+    code: ok
+  admin|shared_chat|create:
+    status: 200
+    code: ok
+  admin|shared_chat|update:
+    status: 200
+    code: ok
+  admin|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  admin|shared_chat|share:
+    status: 200
+    code: ok
+  admin|shared_chat|run:
+    status: 200
+    code: ok
+  admin|shared_chat|execute_tool:
+    status: 200
+    code: ok
+  admin|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  admin|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|shared_chat|decide_approval:
+    status: 200
+    code: ok
+  admin|archived_chat|read:
+    status: 410
+    code: archived
+  admin|archived_chat|list:
+    status: 410
+    code: archived
+  admin|archived_chat|create:
+    status: 410
+    code: archived
+  admin|archived_chat|update:
+    status: 410
+    code: archived
+  admin|archived_chat|delete:
+    status: 410
+    code: archived
+  admin|archived_chat|share:
+    status: 410
+    code: archived
+  admin|archived_chat|run:
+    status: 410
+    code: archived
+  admin|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  admin|archived_chat|read_secret:
+    status: 410
+    code: archived
+  admin|archived_chat|rotate_secret:
+    status: 410
+    code: archived
+  admin|archived_chat|decide_approval:
+    status: 410
+    code: archived
+  admin|artifact_clean|read:
+    status: 200
+    code: ok
+  admin|artifact_clean|list:
+    status: 200
+    code: ok
+  admin|artifact_clean|create:
+    status: 200
+    code: ok
+  admin|artifact_clean|update:
+    status: 200
+    code: ok
+  admin|artifact_clean|delete:
+    status: 200
+    code: ok
+  admin|artifact_clean|share:
+    status: 200
+    code: ok
+  admin|artifact_clean|run:
+    status: 200
+    code: ok
+  admin|artifact_clean|execute_tool:
+    status: 200
+    code: ok
+  admin|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  admin|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|artifact_clean|decide_approval:
+    status: 200
+    code: ok
+  admin|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  admin|artifact_infected|list:
+    status: 200
+    code: ok
+  admin|artifact_infected|create:
+    status: 200
+    code: ok
+  admin|artifact_infected|update:
+    status: 200
+    code: ok
+  admin|artifact_infected|delete:
+    status: 200
+    code: ok
+  admin|artifact_infected|share:
+    status: 200
+    code: ok
+  admin|artifact_infected|run:
+    status: 200
+    code: ok
+  admin|artifact_infected|execute_tool:
+    status: 200
+    code: ok
+  admin|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  admin|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|artifact_infected|decide_approval:
+    status: 200
+    code: ok
+  admin|agent|read:
+    status: 200
+    code: ok
+  admin|agent|list:
+    status: 200
+    code: ok
+  admin|agent|create:
+    status: 200
+    code: ok
+  admin|agent|update:
+    status: 200
+    code: ok
+  admin|agent|delete:
+    status: 200
+    code: ok
+  admin|agent|share:
+    status: 200
+    code: ok
+  admin|agent|run:
+    status: 200
+    code: ok
+  admin|agent|execute_tool:
+    status: 200
+    code: ok
+  admin|agent|read_secret:
+    status: 403
+    code: permission_denied
+  admin|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|agent|decide_approval:
+    status: 200
+    code: ok
+  admin|pipeline|read:
+    status: 200
+    code: ok
+  admin|pipeline|list:
+    status: 200
+    code: ok
+  admin|pipeline|create:
+    status: 200
+    code: ok
+  admin|pipeline|update:
+    status: 200
+    code: ok
+  admin|pipeline|delete:
+    status: 200
+    code: ok
+  admin|pipeline|share:
+    status: 200
+    code: ok
+  admin|pipeline|run:
+    status: 200
+    code: ok
+  admin|pipeline|execute_tool:
+    status: 200
+    code: ok
+  admin|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  admin|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|pipeline|decide_approval:
+    status: 200
+    code: ok
+  admin|personal_memory_set|read:
+    status: 200
+    code: ok
+  admin|personal_memory_set|list:
+    status: 200
+    code: ok
+  admin|personal_memory_set|create:
+    status: 200
+    code: ok
+  admin|personal_memory_set|update:
+    status: 200
+    code: ok
+  admin|personal_memory_set|delete:
+    status: 200
+    code: ok
+  admin|personal_memory_set|share:
+    status: 200
+    code: ok
+  admin|personal_memory_set|run:
+    status: 200
+    code: ok
+  admin|personal_memory_set|execute_tool:
+    status: 200
+    code: ok
+  admin|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  admin|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|personal_memory_set|decide_approval:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|read:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|list:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|create:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|update:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  admin|workspace_memory_set|share:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|run:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|execute_tool:
+    status: 200
+    code: ok
+  admin|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  admin|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|workspace_memory_set|decide_approval:
+    status: 200
+    code: ok
+  admin|connection|read:
+    status: 200
+    code: ok
+  admin|connection|list:
+    status: 200
+    code: ok
+  admin|connection|create:
+    status: 200
+    code: ok
+  admin|connection|update:
+    status: 200
+    code: ok
+  admin|connection|delete:
+    status: 200
+    code: ok
+  admin|connection|share:
+    status: 200
+    code: ok
+  admin|connection|run:
+    status: 200
+    code: ok
+  admin|connection|execute_tool:
+    status: 200
+    code: ok
+  admin|connection|read_secret:
+    status: 403
+    code: permission_denied
+  admin|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|connection|decide_approval:
+    status: 200
+    code: ok
+  admin|provider_key|read:
+    status: 200
+    code: ok
+  admin|provider_key|list:
+    status: 200
+    code: ok
+  admin|provider_key|create:
+    status: 200
+    code: ok
+  admin|provider_key|update:
+    status: 200
+    code: ok
+  admin|provider_key|delete:
+    status: 200
+    code: ok
+  admin|provider_key|share:
+    status: 200
+    code: ok
+  admin|provider_key|run:
+    status: 200
+    code: ok
+  admin|provider_key|execute_tool:
+    status: 200
+    code: ok
+  admin|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  admin|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|provider_key|decide_approval:
+    status: 200
+    code: ok
+  admin|audit_log|read:
+    status: 200
+    code: ok
+  admin|audit_log|list:
+    status: 200
+    code: ok
+  admin|audit_log|create:
+    status: 200
+    code: ok
+  admin|audit_log|update:
+    status: 200
+    code: ok
+  admin|audit_log|delete:
+    status: 403
+    code: permission_denied
+  admin|audit_log|share:
+    status: 403
+    code: permission_denied
+  admin|audit_log|run:
+    status: 403
+    code: permission_denied
+  admin|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  admin|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  admin|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  admin|budget|read:
+    status: 200
+    code: ok
+  admin|budget|list:
+    status: 200
+    code: ok
+  admin|budget|create:
+    status: 200
+    code: ok
+  admin|budget|update:
+    status: 200
+    code: ok
+  admin|budget|delete:
+    status: 403
+    code: permission_denied
+  admin|budget|share:
+    status: 403
+    code: permission_denied
+  admin|budget|run:
+    status: 403
+    code: permission_denied
+  admin|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  admin|budget|read_secret:
+    status: 403
+    code: permission_denied
+  admin|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  admin|mcp_token|read:
+    status: 200
+    code: ok
+  admin|mcp_token|list:
+    status: 200
+    code: ok
+  admin|mcp_token|create:
+    status: 200
+    code: ok
+  admin|mcp_token|update:
+    status: 200
+    code: ok
+  admin|mcp_token|delete:
+    status: 200
+    code: ok
+  admin|mcp_token|share:
+    status: 200
+    code: ok
+  admin|mcp_token|run:
+    status: 200
+    code: ok
+  admin|mcp_token|execute_tool:
+    status: 200
+    code: ok
+  admin|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  admin|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|mcp_token|decide_approval:
+    status: 200
+    code: ok
+  admin|tool|read:
+    status: 200
+    code: ok
+  admin|tool|list:
+    status: 200
+    code: ok
+  admin|tool|create:
+    status: 200
+    code: ok
+  admin|tool|update:
+    status: 200
+    code: ok
+  admin|tool|delete:
+    status: 403
+    code: permission_denied
+  admin|tool|share:
+    status: 200
+    code: ok
+  admin|tool|run:
+    status: 200
+    code: ok
+  admin|tool|execute_tool:
+    status: 200
+    code: ok
+  admin|tool|read_secret:
+    status: 403
+    code: permission_denied
+  admin|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  admin|tool|decide_approval:
+    status: 200
+    code: ok
+  member|own_chat|read:
+    status: 200
+    code: ok
+  member|own_chat|list:
+    status: 200
+    code: ok
+  member|own_chat|create:
+    status: 200
+    code: ok
+  member|own_chat|update:
+    status: 200
+    code: ok
+  member|own_chat|delete:
+    status: 200
+    code: ok
+  member|own_chat|share:
+    status: 200
+    code: ok
+  member|own_chat|run:
+    status: 200
+    code: ok
+  member|own_chat|execute_tool:
+    status: 200
+    code: ok
+  member|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  member|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|own_chat|decide_approval:
+    status: 200
+    code: ok
+  member|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|create:
+    status: 200
+    code: ok
+  member|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|other_member_chat|decide_approval:
+    status: 200
+    code: ok
+  member|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  member|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  member|shared_chat|read:
+    status: 200
+    code: ok
+  member|shared_chat|list:
+    status: 200
+    code: ok
+  member|shared_chat|create:
+    status: 200
+    code: ok
+  member|shared_chat|update:
+    status: 403
+    code: permission_denied
+  member|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  member|shared_chat|share:
+    status: 403
+    code: permission_denied
+  member|shared_chat|run:
+    status: 403
+    code: permission_denied
+  member|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  member|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  member|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|shared_chat|decide_approval:
+    status: 200
+    code: ok
+  member|archived_chat|read:
+    status: 410
+    code: archived
+  member|archived_chat|list:
+    status: 410
+    code: archived
+  member|archived_chat|create:
+    status: 410
+    code: archived
+  member|archived_chat|update:
+    status: 410
+    code: archived
+  member|archived_chat|delete:
+    status: 410
+    code: archived
+  member|archived_chat|share:
+    status: 410
+    code: archived
+  member|archived_chat|run:
+    status: 410
+    code: archived
+  member|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  member|archived_chat|read_secret:
+    status: 410
+    code: archived
+  member|archived_chat|rotate_secret:
+    status: 410
+    code: archived
+  member|archived_chat|decide_approval:
+    status: 410
+    code: archived
+  member|artifact_clean|read:
+    status: 200
+    code: ok
+  member|artifact_clean|list:
+    status: 200
+    code: ok
+  member|artifact_clean|create:
+    status: 200
+    code: ok
+  member|artifact_clean|update:
+    status: 200
+    code: ok
+  member|artifact_clean|delete:
+    status: 200
+    code: ok
+  member|artifact_clean|share:
+    status: 200
+    code: ok
+  member|artifact_clean|run:
+    status: 200
+    code: ok
+  member|artifact_clean|execute_tool:
+    status: 200
+    code: ok
+  member|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  member|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|artifact_clean|decide_approval:
+    status: 200
+    code: ok
+  member|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  member|artifact_infected|list:
+    status: 200
+    code: ok
+  member|artifact_infected|create:
+    status: 200
+    code: ok
+  member|artifact_infected|update:
+    status: 200
+    code: ok
+  member|artifact_infected|delete:
+    status: 200
+    code: ok
+  member|artifact_infected|share:
+    status: 200
+    code: ok
+  member|artifact_infected|run:
+    status: 200
+    code: ok
+  member|artifact_infected|execute_tool:
+    status: 200
+    code: ok
+  member|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  member|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|artifact_infected|decide_approval:
+    status: 200
+    code: ok
+  member|agent|read:
+    status: 200
+    code: ok
+  member|agent|list:
+    status: 200
+    code: ok
+  member|agent|create:
+    status: 200
+    code: ok
+  member|agent|update:
+    status: 200
+    code: ok
+  member|agent|delete:
+    status: 200
+    code: ok
+  member|agent|share:
+    status: 200
+    code: ok
+  member|agent|run:
+    status: 200
+    code: ok
+  member|agent|execute_tool:
+    status: 200
+    code: ok
+  member|agent|read_secret:
+    status: 403
+    code: permission_denied
+  member|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|agent|decide_approval:
+    status: 200
+    code: ok
+  member|pipeline|read:
+    status: 200
+    code: ok
+  member|pipeline|list:
+    status: 200
+    code: ok
+  member|pipeline|create:
+    status: 200
+    code: ok
+  member|pipeline|update:
+    status: 200
+    code: ok
+  member|pipeline|delete:
+    status: 200
+    code: ok
+  member|pipeline|share:
+    status: 200
+    code: ok
+  member|pipeline|run:
+    status: 200
+    code: ok
+  member|pipeline|execute_tool:
+    status: 200
+    code: ok
+  member|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  member|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|pipeline|decide_approval:
+    status: 200
+    code: ok
+  member|personal_memory_set|read:
+    status: 200
+    code: ok
+  member|personal_memory_set|list:
+    status: 200
+    code: ok
+  member|personal_memory_set|create:
+    status: 200
+    code: ok
+  member|personal_memory_set|update:
+    status: 200
+    code: ok
+  member|personal_memory_set|delete:
+    status: 200
+    code: ok
+  member|personal_memory_set|share:
+    status: 200
+    code: ok
+  member|personal_memory_set|run:
+    status: 200
+    code: ok
+  member|personal_memory_set|execute_tool:
+    status: 200
+    code: ok
+  member|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  member|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|personal_memory_set|decide_approval:
+    status: 200
+    code: ok
+  member|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|create:
+    status: 200
+    code: ok
+  member|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|workspace_memory_set|decide_approval:
+    status: 200
+    code: ok
+  member|connection|read:
+    status: 200
+    code: ok
+  member|connection|list:
+    status: 200
+    code: ok
+  member|connection|create:
+    status: 200
+    code: ok
+  member|connection|update:
+    status: 200
+    code: ok
+  member|connection|delete:
+    status: 200
+    code: ok
+  member|connection|share:
+    status: 200
+    code: ok
+  member|connection|run:
+    status: 200
+    code: ok
+  member|connection|execute_tool:
+    status: 200
+    code: ok
+  member|connection|read_secret:
+    status: 403
+    code: permission_denied
+  member|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|connection|decide_approval:
+    status: 200
+    code: ok
+  member|provider_key|read:
+    status: 200
+    code: ok
+  member|provider_key|list:
+    status: 200
+    code: ok
+  member|provider_key|create:
+    status: 200
+    code: ok
+  member|provider_key|update:
+    status: 200
+    code: ok
+  member|provider_key|delete:
+    status: 200
+    code: ok
+  member|provider_key|share:
+    status: 200
+    code: ok
+  member|provider_key|run:
+    status: 200
+    code: ok
+  member|provider_key|execute_tool:
+    status: 200
+    code: ok
+  member|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  member|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|provider_key|decide_approval:
+    status: 200
+    code: ok
+  member|audit_log|read:
+    status: 403
+    code: permission_denied
+  member|audit_log|list:
+    status: 403
+    code: permission_denied
+  member|audit_log|create:
+    status: 403
+    code: permission_denied
+  member|audit_log|update:
+    status: 403
+    code: permission_denied
+  member|audit_log|delete:
+    status: 403
+    code: permission_denied
+  member|audit_log|share:
+    status: 403
+    code: permission_denied
+  member|audit_log|run:
+    status: 403
+    code: permission_denied
+  member|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  member|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  member|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  member|budget|read:
+    status: 403
+    code: permission_denied
+  member|budget|list:
+    status: 403
+    code: permission_denied
+  member|budget|create:
+    status: 403
+    code: permission_denied
+  member|budget|update:
+    status: 403
+    code: permission_denied
+  member|budget|delete:
+    status: 403
+    code: permission_denied
+  member|budget|share:
+    status: 403
+    code: permission_denied
+  member|budget|run:
+    status: 403
+    code: permission_denied
+  member|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  member|budget|read_secret:
+    status: 403
+    code: permission_denied
+  member|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  member|mcp_token|read:
+    status: 200
+    code: ok
+  member|mcp_token|list:
+    status: 200
+    code: ok
+  member|mcp_token|create:
+    status: 200
+    code: ok
+  member|mcp_token|update:
+    status: 200
+    code: ok
+  member|mcp_token|delete:
+    status: 200
+    code: ok
+  member|mcp_token|share:
+    status: 200
+    code: ok
+  member|mcp_token|run:
+    status: 200
+    code: ok
+  member|mcp_token|execute_tool:
+    status: 200
+    code: ok
+  member|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  member|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|mcp_token|decide_approval:
+    status: 200
+    code: ok
+  member|tool|read:
+    status: 403
+    code: permission_denied
+  member|tool|list:
+    status: 403
+    code: permission_denied
+  member|tool|create:
+    status: 200
+    code: ok
+  member|tool|update:
+    status: 403
+    code: permission_denied
+  member|tool|delete:
+    status: 403
+    code: permission_denied
+  member|tool|share:
+    status: 403
+    code: permission_denied
+  member|tool|run:
+    status: 403
+    code: permission_denied
+  member|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  member|tool|read_secret:
+    status: 403
+    code: permission_denied
+  member|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  member|tool|decide_approval:
+    status: 200
+    code: ok
+  guest|own_chat|read:
+    status: 200
+    code: ok
+  guest|own_chat|list:
+    status: 200
+    code: ok
+  guest|own_chat|create:
+    status: 403
+    code: permission_denied
+  guest|own_chat|update:
+    status: 403
+    code: permission_denied
+  guest|own_chat|delete:
+    status: 403
+    code: permission_denied
+  guest|own_chat|share:
+    status: 200
+    code: ok
+  guest|own_chat|run:
+    status: 403
+    code: permission_denied
+  guest|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  guest|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|own_chat|decide_approval:
+    status: 200
+    code: ok
+  guest|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|create:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  guest|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  guest|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  guest|shared_chat|read:
+    status: 200
+    code: ok
+  guest|shared_chat|list:
+    status: 200
+    code: ok
+  guest|shared_chat|create:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|update:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|share:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|run:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  guest|archived_chat|read:
+    status: 410
+    code: archived
+  guest|archived_chat|list:
+    status: 410
+    code: archived
+  guest|archived_chat|create:
+    status: 410
+    code: archived
+  guest|archived_chat|update:
+    status: 410
+    code: archived
+  guest|archived_chat|delete:
+    status: 410
+    code: archived
+  guest|archived_chat|share:
+    status: 410
+    code: archived
+  guest|archived_chat|run:
+    status: 410
+    code: archived
+  guest|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  guest|archived_chat|read_secret:
+    status: 410
+    code: archived
+  guest|archived_chat|rotate_secret:
+    status: 410
+    code: archived
+  guest|archived_chat|decide_approval:
+    status: 410
+    code: archived
+  guest|artifact_clean|read:
+    status: 200
+    code: ok
+  guest|artifact_clean|list:
+    status: 200
+    code: ok
+  guest|artifact_clean|create:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|update:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|delete:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|share:
+    status: 200
+    code: ok
+  guest|artifact_clean|run:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|artifact_clean|decide_approval:
+    status: 200
+    code: ok
+  guest|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  guest|artifact_infected|list:
+    status: 200
+    code: ok
+  guest|artifact_infected|create:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|update:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|delete:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|share:
+    status: 200
+    code: ok
+  guest|artifact_infected|run:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|artifact_infected|decide_approval:
+    status: 200
+    code: ok
+  guest|agent|read:
+    status: 200
+    code: ok
+  guest|agent|list:
+    status: 200
+    code: ok
+  guest|agent|create:
+    status: 403
+    code: permission_denied
+  guest|agent|update:
+    status: 403
+    code: permission_denied
+  guest|agent|delete:
+    status: 403
+    code: permission_denied
+  guest|agent|share:
+    status: 200
+    code: ok
+  guest|agent|run:
+    status: 403
+    code: permission_denied
+  guest|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|agent|read_secret:
+    status: 403
+    code: permission_denied
+  guest|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|agent|decide_approval:
+    status: 200
+    code: ok
+  guest|pipeline|read:
+    status: 200
+    code: ok
+  guest|pipeline|list:
+    status: 200
+    code: ok
+  guest|pipeline|create:
+    status: 403
+    code: permission_denied
+  guest|pipeline|update:
+    status: 403
+    code: permission_denied
+  guest|pipeline|delete:
+    status: 403
+    code: permission_denied
+  guest|pipeline|share:
+    status: 200
+    code: ok
+  guest|pipeline|run:
+    status: 403
+    code: permission_denied
+  guest|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  guest|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|pipeline|decide_approval:
+    status: 200
+    code: ok
+  guest|personal_memory_set|read:
+    status: 200
+    code: ok
+  guest|personal_memory_set|list:
+    status: 200
+    code: ok
+  guest|personal_memory_set|create:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|update:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|delete:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|share:
+    status: 200
+    code: ok
+  guest|personal_memory_set|run:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|personal_memory_set|decide_approval:
+    status: 200
+    code: ok
+  guest|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|create:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  guest|connection|read:
+    status: 200
+    code: ok
+  guest|connection|list:
+    status: 200
+    code: ok
+  guest|connection|create:
+    status: 403
+    code: permission_denied
+  guest|connection|update:
+    status: 403
+    code: permission_denied
+  guest|connection|delete:
+    status: 403
+    code: permission_denied
+  guest|connection|share:
+    status: 200
+    code: ok
+  guest|connection|run:
+    status: 403
+    code: permission_denied
+  guest|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|connection|read_secret:
+    status: 403
+    code: permission_denied
+  guest|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|connection|decide_approval:
+    status: 200
+    code: ok
+  guest|provider_key|read:
+    status: 200
+    code: ok
+  guest|provider_key|list:
+    status: 200
+    code: ok
+  guest|provider_key|create:
+    status: 403
+    code: permission_denied
+  guest|provider_key|update:
+    status: 403
+    code: permission_denied
+  guest|provider_key|delete:
+    status: 403
+    code: permission_denied
+  guest|provider_key|share:
+    status: 200
+    code: ok
+  guest|provider_key|run:
+    status: 403
+    code: permission_denied
+  guest|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  guest|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|provider_key|decide_approval:
+    status: 200
+    code: ok
+  guest|audit_log|read:
+    status: 403
+    code: permission_denied
+  guest|audit_log|list:
+    status: 403
+    code: permission_denied
+  guest|audit_log|create:
+    status: 403
+    code: permission_denied
+  guest|audit_log|update:
+    status: 403
+    code: permission_denied
+  guest|audit_log|delete:
+    status: 403
+    code: permission_denied
+  guest|audit_log|share:
+    status: 403
+    code: permission_denied
+  guest|audit_log|run:
+    status: 403
+    code: permission_denied
+  guest|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  guest|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  guest|budget|read:
+    status: 403
+    code: permission_denied
+  guest|budget|list:
+    status: 403
+    code: permission_denied
+  guest|budget|create:
+    status: 403
+    code: permission_denied
+  guest|budget|update:
+    status: 403
+    code: permission_denied
+  guest|budget|delete:
+    status: 403
+    code: permission_denied
+  guest|budget|share:
+    status: 403
+    code: permission_denied
+  guest|budget|run:
+    status: 403
+    code: permission_denied
+  guest|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|budget|read_secret:
+    status: 403
+    code: permission_denied
+  guest|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|read:
+    status: 200
+    code: ok
+  guest|mcp_token|list:
+    status: 200
+    code: ok
+  guest|mcp_token|create:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|update:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|delete:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|share:
+    status: 200
+    code: ok
+  guest|mcp_token|run:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|mcp_token|decide_approval:
+    status: 200
+    code: ok
+  guest|tool|read:
+    status: 403
+    code: permission_denied
+  guest|tool|list:
+    status: 403
+    code: permission_denied
+  guest|tool|create:
+    status: 403
+    code: permission_denied
+  guest|tool|update:
+    status: 403
+    code: permission_denied
+  guest|tool|delete:
+    status: 403
+    code: permission_denied
+  guest|tool|share:
+    status: 403
+    code: permission_denied
+  guest|tool|run:
+    status: 403
+    code: permission_denied
+  guest|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  guest|tool|read_secret:
+    status: 403
+    code: permission_denied
+  guest|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  guest|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  non_member|own_chat|read:
+    status: 404
+    code: not_found
+  non_member|own_chat|list:
+    status: 404
+    code: not_found
+  non_member|own_chat|create:
+    status: 404
+    code: not_found
+  non_member|own_chat|update:
+    status: 404
+    code: not_found
+  non_member|own_chat|delete:
+    status: 404
+    code: not_found
+  non_member|own_chat|share:
+    status: 404
+    code: not_found
+  non_member|own_chat|run:
+    status: 404
+    code: not_found
+  non_member|own_chat|execute_tool:
+    status: 404
+    code: not_found
+  non_member|own_chat|read_secret:
+    status: 404
+    code: not_found
+  non_member|own_chat|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|own_chat|decide_approval:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|read:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|list:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|create:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|update:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|delete:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|share:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|run:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|execute_tool:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|read_secret:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|other_member_chat|decide_approval:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  non_member|shared_chat|read:
+    status: 200
+    code: ok
+  non_member|shared_chat|list:
+    status: 200
+    code: ok
+  non_member|shared_chat|create:
+    status: 404
+    code: not_found
+  non_member|shared_chat|update:
+    status: 404
+    code: not_found
+  non_member|shared_chat|delete:
+    status: 404
+    code: not_found
+  non_member|shared_chat|share:
+    status: 404
+    code: not_found
+  non_member|shared_chat|run:
+    status: 404
+    code: not_found
+  non_member|shared_chat|execute_tool:
+    status: 404
+    code: not_found
+  non_member|shared_chat|read_secret:
+    status: 404
+    code: not_found
+  non_member|shared_chat|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|shared_chat|decide_approval:
+    status: 404
+    code: not_found
+  non_member|archived_chat|read:
+    status: 404
+    code: not_found
+  non_member|archived_chat|list:
+    status: 404
+    code: not_found
+  non_member|archived_chat|create:
+    status: 404
+    code: not_found
+  non_member|archived_chat|update:
+    status: 404
+    code: not_found
+  non_member|archived_chat|delete:
+    status: 404
+    code: not_found
+  non_member|archived_chat|share:
+    status: 404
+    code: not_found
+  non_member|archived_chat|run:
+    status: 404
+    code: not_found
+  non_member|archived_chat|execute_tool:
+    status: 404
+    code: not_found
+  non_member|archived_chat|read_secret:
+    status: 404
+    code: not_found
+  non_member|archived_chat|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|archived_chat|decide_approval:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|read:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|list:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|create:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|update:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|delete:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|share:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|run:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|execute_tool:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|read_secret:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|artifact_clean|decide_approval:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|read:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|list:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|create:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|update:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|delete:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|share:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|run:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|execute_tool:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|read_secret:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|artifact_infected|decide_approval:
+    status: 404
+    code: not_found
+  non_member|agent|read:
+    status: 404
+    code: not_found
+  non_member|agent|list:
+    status: 404
+    code: not_found
+  non_member|agent|create:
+    status: 404
+    code: not_found
+  non_member|agent|update:
+    status: 404
+    code: not_found
+  non_member|agent|delete:
+    status: 404
+    code: not_found
+  non_member|agent|share:
+    status: 404
+    code: not_found
+  non_member|agent|run:
+    status: 404
+    code: not_found
+  non_member|agent|execute_tool:
+    status: 404
+    code: not_found
+  non_member|agent|read_secret:
+    status: 404
+    code: not_found
+  non_member|agent|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|agent|decide_approval:
+    status: 404
+    code: not_found
+  non_member|pipeline|read:
+    status: 404
+    code: not_found
+  non_member|pipeline|list:
+    status: 404
+    code: not_found
+  non_member|pipeline|create:
+    status: 404
+    code: not_found
+  non_member|pipeline|update:
+    status: 404
+    code: not_found
+  non_member|pipeline|delete:
+    status: 404
+    code: not_found
+  non_member|pipeline|share:
+    status: 404
+    code: not_found
+  non_member|pipeline|run:
+    status: 404
+    code: not_found
+  non_member|pipeline|execute_tool:
+    status: 404
+    code: not_found
+  non_member|pipeline|read_secret:
+    status: 404
+    code: not_found
+  non_member|pipeline|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|pipeline|decide_approval:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|read:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|list:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|create:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|update:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|delete:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|share:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|run:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|execute_tool:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|read_secret:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|personal_memory_set|decide_approval:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|read:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|list:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|create:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|update:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|delete:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|share:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|run:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|execute_tool:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|read_secret:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|workspace_memory_set|decide_approval:
+    status: 404
+    code: not_found
+  non_member|connection|read:
+    status: 404
+    code: not_found
+  non_member|connection|list:
+    status: 404
+    code: not_found
+  non_member|connection|create:
+    status: 404
+    code: not_found
+  non_member|connection|update:
+    status: 404
+    code: not_found
+  non_member|connection|delete:
+    status: 404
+    code: not_found
+  non_member|connection|share:
+    status: 404
+    code: not_found
+  non_member|connection|run:
+    status: 404
+    code: not_found
+  non_member|connection|execute_tool:
+    status: 404
+    code: not_found
+  non_member|connection|read_secret:
+    status: 403
+    code: permission_denied
+  non_member|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  non_member|connection|decide_approval:
+    status: 404
+    code: not_found
+  non_member|provider_key|read:
+    status: 404
+    code: not_found
+  non_member|provider_key|list:
+    status: 404
+    code: not_found
+  non_member|provider_key|create:
+    status: 404
+    code: not_found
+  non_member|provider_key|update:
+    status: 404
+    code: not_found
+  non_member|provider_key|delete:
+    status: 404
+    code: not_found
+  non_member|provider_key|share:
+    status: 404
+    code: not_found
+  non_member|provider_key|run:
+    status: 404
+    code: not_found
+  non_member|provider_key|execute_tool:
+    status: 404
+    code: not_found
+  non_member|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  non_member|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  non_member|provider_key|decide_approval:
+    status: 404
+    code: not_found
+  non_member|audit_log|read:
+    status: 404
+    code: not_found
+  non_member|audit_log|list:
+    status: 404
+    code: not_found
+  non_member|audit_log|create:
+    status: 404
+    code: not_found
+  non_member|audit_log|update:
+    status: 404
+    code: not_found
+  non_member|audit_log|delete:
+    status: 404
+    code: not_found
+  non_member|audit_log|share:
+    status: 404
+    code: not_found
+  non_member|audit_log|run:
+    status: 404
+    code: not_found
+  non_member|audit_log|execute_tool:
+    status: 404
+    code: not_found
+  non_member|audit_log|read_secret:
+    status: 404
+    code: not_found
+  non_member|audit_log|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|audit_log|decide_approval:
+    status: 404
+    code: not_found
+  non_member|budget|read:
+    status: 404
+    code: not_found
+  non_member|budget|list:
+    status: 404
+    code: not_found
+  non_member|budget|create:
+    status: 404
+    code: not_found
+  non_member|budget|update:
+    status: 404
+    code: not_found
+  non_member|budget|delete:
+    status: 404
+    code: not_found
+  non_member|budget|share:
+    status: 404
+    code: not_found
+  non_member|budget|run:
+    status: 404
+    code: not_found
+  non_member|budget|execute_tool:
+    status: 404
+    code: not_found
+  non_member|budget|read_secret:
+    status: 404
+    code: not_found
+  non_member|budget|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|budget|decide_approval:
+    status: 404
+    code: not_found
+  non_member|mcp_token|read:
+    status: 404
+    code: not_found
+  non_member|mcp_token|list:
+    status: 404
+    code: not_found
+  non_member|mcp_token|create:
+    status: 404
+    code: not_found
+  non_member|mcp_token|update:
+    status: 404
+    code: not_found
+  non_member|mcp_token|delete:
+    status: 404
+    code: not_found
+  non_member|mcp_token|share:
+    status: 404
+    code: not_found
+  non_member|mcp_token|run:
+    status: 404
+    code: not_found
+  non_member|mcp_token|execute_tool:
+    status: 404
+    code: not_found
+  non_member|mcp_token|read_secret:
+    status: 404
+    code: not_found
+  non_member|mcp_token|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|mcp_token|decide_approval:
+    status: 404
+    code: not_found
+  non_member|tool|read:
+    status: 404
+    code: not_found
+  non_member|tool|list:
+    status: 404
+    code: not_found
+  non_member|tool|create:
+    status: 404
+    code: not_found
+  non_member|tool|update:
+    status: 404
+    code: not_found
+  non_member|tool|delete:
+    status: 404
+    code: not_found
+  non_member|tool|share:
+    status: 404
+    code: not_found
+  non_member|tool|run:
+    status: 404
+    code: not_found
+  non_member|tool|execute_tool:
+    status: 404
+    code: not_found
+  non_member|tool|read_secret:
+    status: 404
+    code: not_found
+  non_member|tool|rotate_secret:
+    status: 404
+    code: not_found
+  non_member|tool|decide_approval:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|read:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|list:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|own_chat|update:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|share:
+    status: 404
+    code: not_found
+  share_link_viewer|own_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|read:
+    status: 404
+    code: not_found
+  share_link_viewer|other_member_chat|list:
+    status: 404
+    code: not_found
+  share_link_viewer|other_member_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|update:
+    status: 404
+    code: not_found
+  share_link_viewer|other_member_chat|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|other_member_chat|share:
+    status: 404
+    code: not_found
+  share_link_viewer|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  share_link_viewer|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  share_link_viewer|other_workspace_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  share_link_viewer|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  share_link_viewer|other_workspace_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|other_workspace_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|read:
+    status: 200
+    code: ok
+  share_link_viewer|shared_chat|list:
+    status: 200
+    code: ok
+  share_link_viewer|shared_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|read:
+    status: 404
+    code: not_found
+  share_link_viewer|archived_chat|list:
+    status: 404
+    code: not_found
+  share_link_viewer|archived_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|update:
+    status: 404
+    code: not_found
+  share_link_viewer|archived_chat|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|archived_chat|share:
+    status: 404
+    code: not_found
+  share_link_viewer|archived_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|read:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_clean|list:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_clean|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|update:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_clean|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_clean|share:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_clean|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|read:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_infected|list:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_infected|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|update:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_infected|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_infected|share:
+    status: 404
+    code: not_found
+  share_link_viewer|artifact_infected|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|read:
+    status: 404
+    code: not_found
+  share_link_viewer|agent|list:
+    status: 404
+    code: not_found
+  share_link_viewer|agent|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|update:
+    status: 404
+    code: not_found
+  share_link_viewer|agent|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|agent|share:
+    status: 404
+    code: not_found
+  share_link_viewer|agent|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|read:
+    status: 404
+    code: not_found
+  share_link_viewer|pipeline|list:
+    status: 404
+    code: not_found
+  share_link_viewer|pipeline|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|update:
+    status: 404
+    code: not_found
+  share_link_viewer|pipeline|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|pipeline|share:
+    status: 404
+    code: not_found
+  share_link_viewer|pipeline|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|read:
+    status: 404
+    code: not_found
+  share_link_viewer|workspace_memory_set|list:
+    status: 404
+    code: not_found
+  share_link_viewer|workspace_memory_set|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|update:
+    status: 404
+    code: not_found
+  share_link_viewer|workspace_memory_set|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|workspace_memory_set|share:
+    status: 404
+    code: not_found
+  share_link_viewer|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|read:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|list:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|update:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|delete:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|share:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|read:
+    status: 404
+    code: not_found
+  share_link_viewer|tool|list:
+    status: 404
+    code: not_found
+  share_link_viewer|tool|create:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|update:
+    status: 404
+    code: not_found
+  share_link_viewer|tool|delete:
+    status: 404
+    code: not_found
+  share_link_viewer|tool|share:
+    status: 404
+    code: not_found
+  share_link_viewer|tool|run:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_viewer|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|read:
+    status: 404
+    code: not_found
+  share_link_commenter|own_chat|list:
+    status: 404
+    code: not_found
+  share_link_commenter|own_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|update:
+    status: 404
+    code: not_found
+  share_link_commenter|own_chat|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|own_chat|share:
+    status: 404
+    code: not_found
+  share_link_commenter|own_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|read:
+    status: 404
+    code: not_found
+  share_link_commenter|other_member_chat|list:
+    status: 404
+    code: not_found
+  share_link_commenter|other_member_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|update:
+    status: 404
+    code: not_found
+  share_link_commenter|other_member_chat|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|other_member_chat|share:
+    status: 404
+    code: not_found
+  share_link_commenter|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  share_link_commenter|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  share_link_commenter|other_workspace_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  share_link_commenter|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  share_link_commenter|other_workspace_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|other_workspace_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|read:
+    status: 200
+    code: ok
+  share_link_commenter|shared_chat|list:
+    status: 200
+    code: ok
+  share_link_commenter|shared_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|read:
+    status: 404
+    code: not_found
+  share_link_commenter|archived_chat|list:
+    status: 404
+    code: not_found
+  share_link_commenter|archived_chat|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|update:
+    status: 404
+    code: not_found
+  share_link_commenter|archived_chat|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|archived_chat|share:
+    status: 404
+    code: not_found
+  share_link_commenter|archived_chat|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|read:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_clean|list:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_clean|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|update:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_clean|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_clean|share:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_clean|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|read:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_infected|list:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_infected|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|update:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_infected|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_infected|share:
+    status: 404
+    code: not_found
+  share_link_commenter|artifact_infected|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|read:
+    status: 404
+    code: not_found
+  share_link_commenter|agent|list:
+    status: 404
+    code: not_found
+  share_link_commenter|agent|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|update:
+    status: 404
+    code: not_found
+  share_link_commenter|agent|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|agent|share:
+    status: 404
+    code: not_found
+  share_link_commenter|agent|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|read:
+    status: 404
+    code: not_found
+  share_link_commenter|pipeline|list:
+    status: 404
+    code: not_found
+  share_link_commenter|pipeline|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|update:
+    status: 404
+    code: not_found
+  share_link_commenter|pipeline|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|pipeline|share:
+    status: 404
+    code: not_found
+  share_link_commenter|pipeline|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|read:
+    status: 404
+    code: not_found
+  share_link_commenter|workspace_memory_set|list:
+    status: 404
+    code: not_found
+  share_link_commenter|workspace_memory_set|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|update:
+    status: 404
+    code: not_found
+  share_link_commenter|workspace_memory_set|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|workspace_memory_set|share:
+    status: 404
+    code: not_found
+  share_link_commenter|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|read:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|list:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|update:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|delete:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|share:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|read:
+    status: 404
+    code: not_found
+  share_link_commenter|tool|list:
+    status: 404
+    code: not_found
+  share_link_commenter|tool|create:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|update:
+    status: 404
+    code: not_found
+  share_link_commenter|tool|delete:
+    status: 404
+    code: not_found
+  share_link_commenter|tool|share:
+    status: 404
+    code: not_found
+  share_link_commenter|tool|run:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|read_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  share_link_commenter|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  anonymous|own_chat|read:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|list:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|create:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|update:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|share:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|run:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|own_chat|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|read:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|list:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|create:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|update:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|share:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|run:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|other_member_chat|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|read:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|list:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|create:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|update:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|share:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|run:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|other_workspace_chat|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|read:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|list:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|create:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|update:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|share:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|run:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|shared_chat|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|read:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|list:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|create:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|update:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|share:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|run:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|archived_chat|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|read:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|list:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|create:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|update:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|share:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|run:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_clean|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|read:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|list:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|create:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|update:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|share:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|run:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|artifact_infected|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|read:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|list:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|create:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|update:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|share:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|run:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|agent|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|read:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|list:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|create:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|update:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|share:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|run:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|pipeline|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|read:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|list:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|create:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|update:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|share:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|run:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|personal_memory_set|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|read:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|list:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|create:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|update:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|share:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|run:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|workspace_memory_set|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|read:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|list:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|create:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|update:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|share:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|run:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|connection|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|read:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|list:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|create:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|update:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|share:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|run:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|provider_key|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|read:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|list:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|create:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|update:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|share:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|run:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|audit_log|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|read:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|list:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|create:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|update:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|share:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|run:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|budget|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|read:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|list:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|create:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|update:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|share:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|run:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|mcp_token|decide_approval:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|read:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|list:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|create:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|update:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|delete:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|share:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|run:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|execute_tool:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|read_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|rotate_secret:
+    status: 401
+    code: unauthenticated
+  anonymous|tool|decide_approval:
+    status: 401
+    code: unauthenticated
+  pat_limited_scope|own_chat|read:
+    status: 200
+    code: ok
+  pat_limited_scope|own_chat|list:
+    status: 200
+    code: ok
+  pat_limited_scope|own_chat|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  pat_limited_scope|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  pat_limited_scope|shared_chat|read:
+    status: 200
+    code: ok
+  pat_limited_scope|shared_chat|list:
+    status: 200
+    code: ok
+  pat_limited_scope|shared_chat|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|archived_chat|read:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|list:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|create:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|update:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|delete:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|share:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|run:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  pat_limited_scope|archived_chat|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|archived_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|read:
+    status: 200
+    code: ok
+  pat_limited_scope|artifact_clean|list:
+    status: 200
+    code: ok
+  pat_limited_scope|artifact_clean|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  pat_limited_scope|artifact_infected|list:
+    status: 200
+    code: ok
+  pat_limited_scope|artifact_infected|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|read:
+    status: 200
+    code: ok
+  pat_limited_scope|agent|list:
+    status: 200
+    code: ok
+  pat_limited_scope|agent|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|read:
+    status: 200
+    code: ok
+  pat_limited_scope|pipeline|list:
+    status: 200
+    code: ok
+  pat_limited_scope|pipeline|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|read:
+    status: 200
+    code: ok
+  pat_limited_scope|personal_memory_set|list:
+    status: 200
+    code: ok
+  pat_limited_scope|personal_memory_set|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|read:
+    status: 200
+    code: ok
+  pat_limited_scope|connection|list:
+    status: 200
+    code: ok
+  pat_limited_scope|connection|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|read:
+    status: 200
+    code: ok
+  pat_limited_scope|provider_key|list:
+    status: 200
+    code: ok
+  pat_limited_scope|provider_key|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|read:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|list:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|read:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|list:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|read:
+    status: 200
+    code: ok
+  pat_limited_scope|mcp_token|list:
+    status: 200
+    code: ok
+  pat_limited_scope|mcp_token|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|read:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|list:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|create:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|update:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|delete:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|share:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|run:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|read_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  pat_limited_scope|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|own_chat|read:
+    status: 200
+    code: ok
+  mcp_token|own_chat|list:
+    status: 200
+    code: ok
+  mcp_token|own_chat|create:
+    status: 200
+    code: ok
+  mcp_token|own_chat|update:
+    status: 200
+    code: ok
+  mcp_token|own_chat|delete:
+    status: 200
+    code: ok
+  mcp_token|own_chat|share:
+    status: 200
+    code: ok
+  mcp_token|own_chat|run:
+    status: 200
+    code: ok
+  mcp_token|own_chat|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|create:
+    status: 200
+    code: ok
+  mcp_token|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  mcp_token|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  mcp_token|shared_chat|read:
+    status: 200
+    code: ok
+  mcp_token|shared_chat|list:
+    status: 200
+    code: ok
+  mcp_token|shared_chat|create:
+    status: 200
+    code: ok
+  mcp_token|shared_chat|update:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|share:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|run:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|archived_chat|read:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|list:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|create:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|update:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|delete:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|share:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|run:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  mcp_token|archived_chat|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|archived_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_clean|read:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|list:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|create:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|update:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|delete:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|share:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|run:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  mcp_token|artifact_infected|list:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|create:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|update:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|delete:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|share:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|run:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|agent|read:
+    status: 200
+    code: ok
+  mcp_token|agent|list:
+    status: 200
+    code: ok
+  mcp_token|agent|create:
+    status: 200
+    code: ok
+  mcp_token|agent|update:
+    status: 200
+    code: ok
+  mcp_token|agent|delete:
+    status: 200
+    code: ok
+  mcp_token|agent|share:
+    status: 200
+    code: ok
+  mcp_token|agent|run:
+    status: 200
+    code: ok
+  mcp_token|agent|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|agent|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|pipeline|read:
+    status: 200
+    code: ok
+  mcp_token|pipeline|list:
+    status: 200
+    code: ok
+  mcp_token|pipeline|create:
+    status: 200
+    code: ok
+  mcp_token|pipeline|update:
+    status: 200
+    code: ok
+  mcp_token|pipeline|delete:
+    status: 200
+    code: ok
+  mcp_token|pipeline|share:
+    status: 200
+    code: ok
+  mcp_token|pipeline|run:
+    status: 200
+    code: ok
+  mcp_token|pipeline|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|personal_memory_set|read:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|list:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|create:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|update:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|delete:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|share:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|run:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|create:
+    status: 200
+    code: ok
+  mcp_token|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|connection|read:
+    status: 200
+    code: ok
+  mcp_token|connection|list:
+    status: 200
+    code: ok
+  mcp_token|connection|create:
+    status: 200
+    code: ok
+  mcp_token|connection|update:
+    status: 200
+    code: ok
+  mcp_token|connection|delete:
+    status: 200
+    code: ok
+  mcp_token|connection|share:
+    status: 200
+    code: ok
+  mcp_token|connection|run:
+    status: 200
+    code: ok
+  mcp_token|connection|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|connection|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|provider_key|read:
+    status: 200
+    code: ok
+  mcp_token|provider_key|list:
+    status: 200
+    code: ok
+  mcp_token|provider_key|create:
+    status: 200
+    code: ok
+  mcp_token|provider_key|update:
+    status: 200
+    code: ok
+  mcp_token|provider_key|delete:
+    status: 200
+    code: ok
+  mcp_token|provider_key|share:
+    status: 200
+    code: ok
+  mcp_token|provider_key|run:
+    status: 200
+    code: ok
+  mcp_token|provider_key|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|read:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|list:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|create:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|update:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|share:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|run:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|read:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|list:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|create:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|update:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|share:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|run:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|budget|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|mcp_token|read:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|list:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|create:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|update:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|delete:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|share:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|run:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|read:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|list:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|create:
+    status: 200
+    code: ok
+  mcp_token|tool|update:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|delete:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|share:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|run:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|execute_tool:
+    status: 200
+    code: ok
+  mcp_token|tool|read_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  mcp_token|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|own_chat|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  agent_acting_for_member|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  agent_acting_for_member|shared_chat|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|shared_chat|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|shared_chat|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|shared_chat|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|archived_chat|read:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|list:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|create:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|update:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|delete:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|share:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|run:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|execute_tool:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|read_secret:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|rotate_secret:
+    status: 410
+    code: archived
+  agent_acting_for_member|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_clean|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_infected|read:
+    status: 409
+    code: artifact_not_clean
+  agent_acting_for_member|artifact_infected|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|agent|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|agent|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|pipeline|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|personal_memory_set|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|connection|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|connection|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|provider_key|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|read:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|list:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|create:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|read:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|list:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|create:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|mcp_token|read:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|list:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|update:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|delete:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|share:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|run:
+    status: 200
+    code: ok
+  agent_acting_for_member|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|read:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|list:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|create:
+    status: 200
+    code: ok
+  agent_acting_for_member|tool|update:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|delete:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|share:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|run:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|execute_tool:
+    status: 200
+    code: ok
+  agent_acting_for_member|tool|read_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  agent_acting_for_member|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|read:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|list:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|create:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|update:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|delete:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|share:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|run:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|own_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|read:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|list:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|create:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|update:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|delete:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|share:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|run:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|other_member_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|other_workspace_chat|read:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|list:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|create:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|update:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|delete:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|share:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|run:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|execute_tool:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|read_secret:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|rotate_secret:
+    status: 404
+    code: not_found
+  archived_member|other_workspace_chat|decide_approval:
+    status: 404
+    code: not_found
+  archived_member|shared_chat|read:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|list:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|create:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|update:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|delete:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|share:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|run:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|shared_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|read:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|list:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|create:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|update:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|delete:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|share:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|run:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|archived_chat|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|read:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|list:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|create:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|update:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|delete:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|share:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|run:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_clean|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|read:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|list:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|create:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|update:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|delete:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|share:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|run:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|artifact_infected|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|agent|read:
+    status: 403
+    code: permission_denied
+  archived_member|agent|list:
+    status: 403
+    code: permission_denied
+  archived_member|agent|create:
+    status: 403
+    code: permission_denied
+  archived_member|agent|update:
+    status: 403
+    code: permission_denied
+  archived_member|agent|delete:
+    status: 403
+    code: permission_denied
+  archived_member|agent|share:
+    status: 403
+    code: permission_denied
+  archived_member|agent|run:
+    status: 403
+    code: permission_denied
+  archived_member|agent|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|agent|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|agent|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|agent|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|read:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|list:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|create:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|update:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|delete:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|share:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|run:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|pipeline|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|read:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|list:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|create:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|update:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|delete:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|share:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|run:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|personal_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|read:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|list:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|create:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|update:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|delete:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|share:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|run:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|workspace_memory_set|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|connection|read:
+    status: 403
+    code: permission_denied
+  archived_member|connection|list:
+    status: 403
+    code: permission_denied
+  archived_member|connection|create:
+    status: 403
+    code: permission_denied
+  archived_member|connection|update:
+    status: 403
+    code: permission_denied
+  archived_member|connection|delete:
+    status: 403
+    code: permission_denied
+  archived_member|connection|share:
+    status: 403
+    code: permission_denied
+  archived_member|connection|run:
+    status: 403
+    code: permission_denied
+  archived_member|connection|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|connection|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|connection|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|connection|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|read:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|list:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|create:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|update:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|delete:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|share:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|run:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|provider_key|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|read:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|list:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|create:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|update:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|delete:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|share:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|run:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|audit_log|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|budget|read:
+    status: 403
+    code: permission_denied
+  archived_member|budget|list:
+    status: 403
+    code: permission_denied
+  archived_member|budget|create:
+    status: 403
+    code: permission_denied
+  archived_member|budget|update:
+    status: 403
+    code: permission_denied
+  archived_member|budget|delete:
+    status: 403
+    code: permission_denied
+  archived_member|budget|share:
+    status: 403
+    code: permission_denied
+  archived_member|budget|run:
+    status: 403
+    code: permission_denied
+  archived_member|budget|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|budget|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|budget|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|budget|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|read:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|list:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|create:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|update:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|delete:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|share:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|run:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|mcp_token|decide_approval:
+    status: 403
+    code: permission_denied
+  archived_member|tool|read:
+    status: 403
+    code: permission_denied
+  archived_member|tool|list:
+    status: 403
+    code: permission_denied
+  archived_member|tool|create:
+    status: 403
+    code: permission_denied
+  archived_member|tool|update:
+    status: 403
+    code: permission_denied
+  archived_member|tool|delete:
+    status: 403
+    code: permission_denied
+  archived_member|tool|share:
+    status: 403
+    code: permission_denied
+  archived_member|tool|run:
+    status: 403
+    code: permission_denied
+  archived_member|tool|execute_tool:
+    status: 403
+    code: permission_denied
+  archived_member|tool|read_secret:
+    status: 403
+    code: permission_denied
+  archived_member|tool|rotate_secret:
+    status: 403
+    code: permission_denied
+  archived_member|tool|decide_approval:
+    status: 403
+    code: permission_denied
+  revoked_session|own_chat|read:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|list:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|create:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|update:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|share:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|run:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|own_chat|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|read:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|list:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|create:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|update:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|share:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|run:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|other_member_chat|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|read:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|list:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|create:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|update:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|share:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|run:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|other_workspace_chat|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|read:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|list:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|create:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|update:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|share:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|run:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|shared_chat|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|read:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|list:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|create:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|update:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|share:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|run:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|archived_chat|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|read:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|list:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|create:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|update:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|share:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|run:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_clean|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|read:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|list:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|create:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|update:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|share:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|run:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|artifact_infected|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|read:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|list:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|create:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|update:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|share:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|run:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|agent|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|read:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|list:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|create:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|update:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|share:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|run:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|pipeline|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|read:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|list:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|create:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|update:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|share:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|run:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|personal_memory_set|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|read:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|list:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|create:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|update:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|share:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|run:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|workspace_memory_set|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|read:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|list:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|create:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|update:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|share:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|run:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|connection|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|read:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|list:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|create:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|update:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|share:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|run:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|provider_key|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|read:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|list:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|create:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|update:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|share:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|run:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|audit_log|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|read:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|list:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|create:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|update:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|share:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|run:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|budget|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|read:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|list:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|create:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|update:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|share:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|run:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|mcp_token|decide_approval:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|read:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|list:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|create:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|update:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|delete:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|share:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|run:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|execute_tool:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|read_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|rotate_secret:
+    status: 401
+    code: session_revoked
+  revoked_session|tool|decide_approval:
+    status: 401
+    code: session_revoked
