@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
-type RequiredDoc = { id: string; kind: string; version: number; summary_of_changes: string; url: string };
+type RequiredDoc = {
+  id: string;
+  kind: string;
+  version: number;
+  summary_of_changes: string;
+  url: string;
+};
 
 export function ConsentGate() {
   const [required, setRequired] = useState<RequiredDoc[]>([]);
@@ -15,11 +21,22 @@ export function ConsentGate() {
   }, []);
 
   async function accept(id: string) {
-    await api("/api/v1/me/consents", { method: "POST", body: JSON.stringify({ document_id: id }) });
-    setRequired((current) => current.filter((doc) => doc.id !== id));
+    await api("/api/v1/me/consents", {
+      method: "POST",
+      body: JSON.stringify({ document_id: id }),
+    });
+    const next = required.filter((doc) => doc.id !== id);
+    setRequired(next);
+    if (next.length === 0) window.location.assign("/chat/new");
   }
 
-  if (required.length === 0) return <p>You are up to date.</p>;
+  if (required.length === 0) {
+    return (
+      <p>
+        You are up to date. <a href="/chat/new">Continue</a>
+      </p>
+    );
+  }
   return (
     <div>
       {required.map((doc) => (

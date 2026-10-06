@@ -60,10 +60,18 @@ def test_packing_never_orphans_tool_results() -> None:
         messages = [{"role": "system", "content": "rules"}]
         for index in range(rng.randint(1, 8)):
             call = f"call-{index}"
-            messages.append({"role": "assistant", "content": "x" * rng.randint(10, 80), "tool_call_id": call})
-            messages.append({"role": "tool", "content": "y" * rng.randint(10, 80), "tool_call_id": call})
+            messages.append(
+                {"role": "assistant", "content": "x" * rng.randint(10, 80), "tool_call_id": call}
+            )
+            messages.append(
+                {"role": "tool", "content": "y" * rng.randint(10, 80), "tool_call_id": call}
+            )
         packed = pack_messages(messages, budget_tokens=40)
-        calls = {m["tool_call_id"] for m in packed if m["role"] == "assistant" and m.get("tool_call_id")}
-        results = {m["tool_call_id"] for m in packed if m["role"] == "tool" and m.get("tool_call_id")}
+        calls = {
+            m["tool_call_id"] for m in packed if m["role"] == "assistant" and m.get("tool_call_id")
+        }
+        results = {
+            m["tool_call_id"] for m in packed if m["role"] == "tool" and m.get("tool_call_id")
+        }
         assert calls == results
         assert sum(len(str(m.get("content"))) // 4 for m in packed) <= 80

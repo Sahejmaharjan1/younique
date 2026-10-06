@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -50,11 +53,32 @@ jobs:
         with:
           fetch-depth: 0
       - name: DCO
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
         run: |
-          git log --format='%H %s%n%b' origin/${{ github.base_ref || 'main' }}..HEAD | grep -q "Signed-off-by:" || {
-            echo "Commits must contain Signed-off-by (DCO)."
-            exit 1
-          }
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch --no-tags origin "$BASE_REF"
+            range="origin/${BASE_REF}..HEAD"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            range="HEAD"
+          else
+            range="${BEFORE}..HEAD"
+          fi
+          commits=$(git rev-list "$range" || true)
+          if [ -z "$commits" ]; then
+            commits=$(git rev-parse HEAD)
+          fi
+          fail=0
+          for sha in $commits; do
+            if ! git log -1 --format='%B' "$sha" | grep -q "Signed-off-by:"; then
+              echo "Commit $sha is missing Signed-off-by."
+              git log -1 --format='%h %s' "$sha"
+              fail=1
+            fi
+          done
+          exit "$fail"
 
   backend-lint-types:
     needs: changes
@@ -67,10 +91,10 @@ jobs:
       - run: uv run --directory backend ruff check src tests
       - run: uv run --directory backend ruff format --check src tests
       - run: uv run --directory backend mypy src
-      - run: python3 scripts/check_forbidden_imports.py
-      - run: python3 scripts/check_money.py
-      - run: python3 scripts/check_routes.py
-      - run: python3 scripts/check_migration.py
+      - run: uv run --directory backend python ../scripts/check_forbidden_imports.py
+      - run: uv run --directory backend python ../scripts/check_money.py
+      - run: uv run --directory backend python ../scripts/check_routes.py
+      - run: uv run --directory backend python ../scripts/check_migration.py
 
   backend-unit:
     needs: changes
@@ -81,6 +105,35 @@ jobs:
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --all-groups --directory backend
       - run: uv run --directory backend pytest tests/unit tests/agents tests/authz
+
+  backend-integration:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: younique
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d younique"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      YOUNIQUE_INTEGRATION_ADMIN_URL: postgresql://postgres:postgres@localhost:5432/younique
+      DATABASE_URL: postgresql+asyncpg://younique_app:younique_app@localhost:5432/younique
+      DATABASE_URL_MIGRATOR: postgresql+asyncpg://postgres:postgres@localhost:5432/younique
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend alembic upgrade head
+      - run: uv run --directory backend pytest tests/integration
 
   backend-authz:
     needs: changes
@@ -100,8 +153,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --all-groups --directory backend
-      - run: python3 scripts/check_forbidden_imports.py
-      - run: uv run --directory backend pytest tests/agents/test_graph.py -q
+      - run: uv run --directory backend python ../scripts/check_forbidden_imports.py
+      - run: uv run --directory backend pytest tests/connectors -q
 
   migration-check:
     needs: changes
@@ -109,7 +162,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 scripts/check_migration.py
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend python ../scripts/check_migration.py
 
   openapi-drift:
     needs: changes
@@ -129,8 +184,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -138,6 +191,80 @@ jobs:
       - run: pnpm install
       - run: pnpm --filter @younique/web lint
       - run: pnpm --filter @younique/web typecheck
+
+  e2e-critical:
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.backend == 'true' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: younique
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d younique"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql+asyncpg://younique_app:younique_app@localhost:5432/younique
+      DATABASE_URL_MIGRATOR: postgresql+asyncpg://postgres:postgres@localhost:5432/younique
+      LLM_MODE: fake
+      APP_ENV: e2e
+      COOKIE_SECURE: "false"
+      OIDC_EMULATOR: "true"
+      FIREBASE_AUTH_EMULATOR_HOST: 127.0.0.1:9099
+      STREAM_PACE_MS: "40"
+      RATE_LIMIT_PER_MINUTE: "1000"
+      API_ORIGIN: http://127.0.0.1:8000
+      NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST: 127.0.0.1:9099
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: demo-younique
+      E2E_BASE_URL: http://127.0.0.1:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: uv sync --all-groups --directory backend
+      - run: uv run --directory backend alembic upgrade head
+      - run: pnpm install
+      - run: pnpm --filter @younique/web build
+      - name: Start API
+        working-directory: backend
+        run: |
+          uv run uvicorn younique.main_api:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8000/healthz && exit 0
+            sleep 1
+          done
+          cat /tmp/api.log
+          exit 1
+      - name: Start web
+        run: |
+          pnpm --filter @younique/web start --port 3000 > /tmp/web.log 2>&1 &
+          for i in $(seq 1 40); do
+            curl -sf http://127.0.0.1:3000/login && exit 0
+            sleep 1
+          done
+          cat /tmp/web.log
+          exit 1
+      - name: Install Playwright
+        run: pnpm --filter @younique/web exec playwright install --with-deps chromium
+      - name: Playwright
+        run: pnpm --filter @younique/web exec playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-trace
+          path: apps/web/test-results
+          if-no-files-found: ignore
 
   terraform-validate:
     needs: changes
@@ -159,6 +286,10 @@ jobs:
 
   security-scan:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5

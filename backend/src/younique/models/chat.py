@@ -42,12 +42,12 @@ class Chat(UUIDPrimaryKey, AuditColumns, SoftDelete, Base):
         Uuid, ForeignKey("app.workspaces.id"), nullable=False
     )
     title: Mapped[str] = mapped_column(Text, nullable=False, server_default="New chat")
-    model_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.models.id"), nullable=True)
+    model_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.models.id"), nullable=True
+    )
     reasoning_mode: Mapped[str] = mapped_column(Text, nullable=False, server_default="inherit")
     memory_write_mode: Mapped[str] = mapped_column(Text, nullable=False, server_default="inherit")
-    include_reasoning_on_share: Mapped[bool] = mapped_column(
-        nullable=False, server_default="false"
-    )
+    include_reasoning_on_share: Mapped[bool] = mapped_column(nullable=False, server_default="false")
 
 
 class Message(UUIDPrimaryKey, AuditColumns, SoftDelete, Base):
@@ -130,7 +130,9 @@ class AgentVersion(UUIDPrimaryKey, Base):
     agent_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.agents.id"), nullable=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     instructions: Mapped[str] = mapped_column(Text, nullable=False, server_default="")
-    model_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.models.id"), nullable=True)
+    model_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.models.id"), nullable=True
+    )
     tool_allowlist: Mapped[list[str]] = mapped_column(
         JSONB, nullable=False, server_default=text("'[]'::jsonb")
     )
@@ -192,14 +194,21 @@ class Run(UUIDPrimaryKey, AuditColumns, Base):
             name="kind_target",
         ),
         Index("ix_runs_ws_created", "workspace_id", "created_at"),
-        Index("uq_runs_idempotency", "idempotency_key", unique=True, postgresql_where=text("idempotency_key IS NOT NULL")),
+        Index(
+            "uq_runs_idempotency",
+            "idempotency_key",
+            unique=True,
+            postgresql_where=text("idempotency_key IS NOT NULL"),
+        ),
         {"schema": "app"},
     )
     workspace_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("app.workspaces.id"), nullable=False
     )
     kind: Mapped[str] = mapped_column(Text, nullable=False)
-    chat_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.chats.id"), nullable=True)
+    chat_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.chats.id"), nullable=True
+    )
     agent_version_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid, ForeignKey("app.agent_versions.id"), nullable=True
     )
@@ -282,7 +291,9 @@ class Approval(UUIDPrimaryKey, AuditColumns, Base):
         Uuid, ForeignKey("app.workspaces.id"), nullable=False
     )
     run_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.runs.id"), nullable=False)
-    run_step_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.run_steps.id"), nullable=True)
+    run_step_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.run_steps.id"), nullable=True
+    )
     tool_key: Mapped[str] = mapped_column(Text, nullable=False)
     tool_args_redacted: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False)
     summary: Mapped[dict[str, object]] = mapped_column(
@@ -291,7 +302,9 @@ class Approval(UUIDPrimaryKey, AuditColumns, Base):
     risk: Mapped[str] = mapped_column(Text, nullable=False)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default="pending")
-    decided_by: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.users.id"), nullable=True)
+    decided_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.users.id"), nullable=True
+    )
     decision_note: Mapped[str | None] = mapped_column(Text, nullable=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

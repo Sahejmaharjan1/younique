@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
+  },
+  "response": {
+    "status": 429,
+    "headers": {"retry-after": "3"},
+    "json": {"error": {"message": "rate limit"}}
+  }
+}

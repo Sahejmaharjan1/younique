@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-_TAGS = re.compile("[\U000E0000-\U000E007F]")
+_TAGS = re.compile("[\U000e0000-\U000e007f]")
 _BIDI = re.compile("[\u202a-\u202e\u2066-\u2069]")
 
 

@@ -54,3 +54,27 @@ textarea {
 .flagged {
   background: #fff4d6;
 }
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 1rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #d9d0c3;
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}
+
+iframe {
+  width: 100%;
+  min-height: 8rem;
+  border: 1px solid #d9d0c3;
+}

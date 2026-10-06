@@ -13,7 +13,9 @@ class ProviderFailure:
     detail: str = ""
 
 
-def normalize_provider_error(status: int, body: str, retry_after: str | None = None) -> ProviderFailure:
+def normalize_provider_error(
+    status: int, body: str, retry_after: str | None = None
+) -> ProviderFailure:
     retry_after_ms = None
     if retry_after and retry_after.isdigit():
         retry_after_ms = int(retry_after) * 1000

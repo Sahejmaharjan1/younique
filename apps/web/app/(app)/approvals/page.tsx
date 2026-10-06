@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import { ApprovalCard } from "@/features/approvals/ApprovalCard";
 import { api } from "@/lib/api";
 
-type Approval = { id: string; tool_key: string; summary: { headline?: string; flagged_args?: string[] } };
+type Approval = {
+  id: string;
+  tool_key: string;
+  summary: { headline?: string; flagged_args?: string[] };
+};
 
 export default function ApprovalsPage() {
   const [rows, setRows] = useState<Approval[]>([]);
   useEffect(() => {
-    void api<{ data: Approval[] }>("/api/v1/approvals?status=pending").then((body) => setRows(body.data));
+    void api<{ data: Approval[] }>("/api/v1/approvals?status=pending").then(
+      (body) => setRows(body.data),
+    );
   }, []);
   return (
     <main>

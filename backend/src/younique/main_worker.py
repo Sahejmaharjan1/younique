@@ -1,3 +1,3 @@
-from younique.api.factory import create_app
+from younique.tasks.http import create_worker_app
 
-app = create_app()
+app = create_worker_app()

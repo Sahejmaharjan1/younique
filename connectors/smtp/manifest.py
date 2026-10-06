@@ -1,4 +1,10 @@
-from younique_sdk import ConnectorManifest, PermissionBundle, tool
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+from types import ModuleType
+
+from younique_sdk import ConnectorManifest, PermissionBundle
 
 MANIFEST = ConnectorManifest(
     key="smtp",
@@ -21,51 +27,17 @@ MANIFEST = ConnectorManifest(
 )
 
 
-def summarize_for_approval(arguments: dict[str, object], flagged: list[str]) -> dict[str, object]:
-    return {
-        "headline": f"Send email to {arguments.get('to')}",
-        "details": [
-            {"label": "To", "value": arguments.get("to"), "flagged": "to" in flagged},
-            {"label": "Subject", "value": arguments.get("subject"), "flagged": "subject" in flagged},
-        ],
-        "body_preview": str(arguments.get("body") or "")[:280],
-        "irreversible": True,
-        "flagged_args": flagged,
-    }
+def _load(filename: str) -> ModuleType:
+    path = Path(__file__).resolve().parent / "tools" / filename
+    spec = importlib.util.spec_from_file_location(f"younique_connector_smtp_{path.stem}", path)
+    if spec is None or spec.loader is None:
+        raise FileNotFoundError(path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-@tool(
-    key="smtp.send",
-    title="Send email",
-    description="Send an email through the connected SMTP account.",
-    risk="high",
-    bundle="send",
-)
-async def send_email(ctx, arguments: dict[str, object]) -> dict[str, object]:
-    recipients = arguments.get("to")
-    if isinstance(recipients, str):
-        recipients = [recipients]
-    if not isinstance(recipients, list) or len(recipients) > 25:
-        from younique_sdk import ConnectorError
-
-        raise ConnectorError("validation_failed", "At most 25 recipients are allowed.")
-    attachments = arguments.get("attachments") or []
-    if not isinstance(attachments, list) or len(attachments) > 10:
-        from younique_sdk import ConnectorError
-
-        raise ConnectorError("validation_failed", "At most 10 attachments are allowed.")
-    await ctx.send_smtp(
-        host=str(ctx.secrets.get("host") or ""),
-        port=int(str(ctx.secrets.get("port") or "587")),
-        username=str(ctx.secrets.get("username") or ""),
-        password=str(ctx.secrets.get("password") or ""),
-        sender=str(ctx.secrets.get("sender") or ctx.secrets.get("username") or ""),
-        recipients=[str(item) for item in recipients],
-        subject=str(arguments.get("subject") or ""),
-        body=str(arguments.get("body") or ""),
-        attachments=[item for item in attachments if isinstance(item, dict)],
-    )
-    return {"sent": True, "recipients": recipients}
-
-
+_send = _load("send_email.py")
+send_email = _send.send_email
+summarize_for_approval = _send.summarize_for_approval
 TOOLS = [send_email]

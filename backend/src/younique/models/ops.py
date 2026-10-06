@@ -140,7 +140,9 @@ class Model(UUIDPrimaryKey, Base):
     context_window: Mapped[int] = mapped_column(Integer, nullable=False)
     max_output_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
     supports_tools: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
-    supports_reasoning: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    supports_reasoning: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default="false"
+    )
     supports_vision: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
     reasoning_control: Mapped[str] = mapped_column(Text, nullable=False, server_default="none")
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default="active")
@@ -172,7 +174,9 @@ class ProviderKey(UUIDPrimaryKey, AuditColumns, Base):
     provider_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("app.model_providers.id"), nullable=False
     )
-    owner_user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.users.id"), nullable=False)
+    owner_user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("app.users.id"), nullable=False
+    )
     label: Mapped[str] = mapped_column(Text, nullable=False)
     last4: Mapped[str] = mapped_column(Text, nullable=False)
     key_ct: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
@@ -182,7 +186,9 @@ class ProviderKey(UUIDPrimaryKey, AuditColumns, Base):
     key_version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
     base_url_override: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default="active")
-    last_validated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_validated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
@@ -219,7 +225,9 @@ class UsageEvent(Base):
     run_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
     run_step_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
     chat_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
-    model_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.models.id"), nullable=True)
+    model_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.models.id"), nullable=True
+    )
     provider_key_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
     input_tokens: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
     cached_input_tokens: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")

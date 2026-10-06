@@ -61,7 +61,14 @@ class GcpKmsKek:
 
         url = f"https://cloudkms.googleapis.com/v1/{self.key_name}:{method}"
         async with httpx.AsyncClient(timeout=10) as client:
-            response = await client.post(url, json={"plaintext" if method == "encrypt" else "ciphertext": base64.b64encode(data).decode()})
+            response = await client.post(
+                url,
+                json={
+                    "plaintext" if method == "encrypt" else "ciphertext": base64.b64encode(
+                        data
+                    ).decode()
+                },
+            )
             response.raise_for_status()
             body = response.json()
         field = "ciphertext" if method == "encrypt" else "plaintext"

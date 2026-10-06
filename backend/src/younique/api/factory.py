@@ -28,7 +28,6 @@ from younique.core.errors import (
 )
 from younique.core.firebase import verify_id_token
 from younique.core.logging import configure_logging
-from younique.core.oidc import verify_internal_caller
 from younique.core.otel import configure_otel
 from younique.core.rate_limit import hit
 from younique.core.redact import redact_value
@@ -36,14 +35,29 @@ from younique.core.security import clear_session_cookie, csrf_cookie, session_co
 from younique.llm.types import PriceSnapshot
 from younique.models import (
     Approval,
+    Artifact,
     ArtifactVersion,
+    Connection,
     IdempotencyKey,
+    Message,
     ModelProvider,
     ProviderKey,
     Session,
     ToolPolicy,
 )
-from younique.services.accounts import exchange_session, missing_consents, resolve_principal
+from younique.services.accounts import (
+    exchange_session,
+    list_accounts,
+    missing_consents,
+    resolve_principal,
+)
+from younique.services.artifacts_flow import (
+    accept_upload,
+    artifact_detail,
+    list_artifacts,
+    preview_payload,
+    reserve_upload,
+)
 from younique.services.product import (
     archive_chat,
     bundle_tools,
@@ -56,14 +70,20 @@ from younique.services.product import (
     get_chat,
     ingest_upload,
     list_chats,
+    list_message_views,
     list_models,
     provider_key_view,
     record_usage,
     replay_events,
     resolve_share,
+    revoke_provider_key,
+    revoke_share,
+    rotate_provider_key,
     save_provider_key,
     send_message,
     sse,
+    update_chat,
+    user_text_before,
     write_audit,
 )
 
@@ -126,6 +146,19 @@ class PolicyIn(BaseModel):
     allow_when_tainted: bool = False
 
 
+class ChatPatch(BaseModel):
+    title: str | None = None
+    reasoning_mode: str | None = None
+
+
+class RegenerateIn(BaseModel):
+    message_id: UUID
+
+
+class RotateIn(BaseModel):
+    secret: str
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     cfg = settings or get_settings()
     configure_logging()
@@ -134,7 +167,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = cfg
 
     @app.middleware("http")
-    async def request_context(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
+    async def request_context(
+        request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
         request.state.request_id = request_id
         body = await request.body()
@@ -146,7 +181,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         request = Request(request.scope, receive)
         request.state.request_id = request_id
         request.state.cached_body = body
-        if request.method in {"POST", "PUT", "PATCH", "DELETE"} and request.url.path not in CSRF_EXEMPT and not request.url.path.startswith("/internal") and not request.url.path.startswith("/v1/public"):
+        if (
+            request.method in {"POST", "PUT", "PATCH", "DELETE"}
+            and request.url.path not in CSRF_EXEMPT
+            and not request.url.path.startswith("/internal")
+            and not request.url.path.startswith("/v1/public")
+        ):
             cookies = _cookies(request.headers.get("cookie"))
             if cookies.get("csrf") and request.headers.get("x-csrf-token") != cookies.get("csrf"):
                 return _problem_response(csrf_failed(), request_id)
@@ -174,10 +214,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def validation_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
         request_id = getattr(request.state, "request_id", "")
         errors = [
-            {"field": ".".join(str(part) for part in item["loc"]), "code": "invalid", "detail": item["msg"]}
+            {
+                "field": ".".join(str(part) for part in item["loc"]),
+                "code": "invalid",
+                "detail": item["msg"],
+            }
             for item in exc.errors()
         ]
-        return _problem_response(problem(422, "validation_failed", "Validation failed", errors=errors), request_id)
+        return _problem_response(
+            problem(422, "validation_failed", "Validation failed", errors=errors), request_id
+        )
 
     @app.get("/healthz")
     @public
@@ -205,20 +251,31 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 step_up=payload.step_up,
             )
             body = {
-                "user": {"id": str(issued.user.id), "email": issued.user.primary_email, "display_name": issued.user.display_name},
+                "user": {
+                    "id": str(issued.user.id),
+                    "email": issued.user.primary_email,
+                    "display_name": issued.user.display_name,
+                },
                 "workspace": {"id": str(issued.workspace.id), "name": issued.workspace.name},
                 "account_id": str(issued.user.id),
                 "consent_required": issued.consent_required,
             }
         response = JSONResponse(body)
-        response.headers.append("set-cookie", session_cookie(issued.token, secure=cfg.cookie_secure))
+        response.headers.append(
+            "set-cookie", session_cookie(issued.token, secure=cfg.cookie_secure)
+        )
         response.headers.append("set-cookie", csrf_cookie(issued.csrf, secure=cfg.cookie_secure))
         response.headers["X-Request-Id"] = request.state.request_id
         return response
 
     @app.delete("/v1/auth/session")
-    async def logout(principal: Principal = Depends(authorize("read", "session")), db: AsyncSession = Depends(db_session)) -> Response:
-        row = (await db.execute(select(Session).where(Session.id == principal.session_id))).scalar_one()
+    async def logout(
+        principal: Principal = Depends(authorize("read", "session")),
+        db: AsyncSession = Depends(db_session),
+    ) -> Response:
+        row = (
+            await db.execute(select(Session).where(Session.id == principal.session_id))
+        ).scalar_one()
         from datetime import datetime
 
         row.revoked_at = datetime.now(UTC)
@@ -228,20 +285,40 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     @app.get("/v1/me")
-    async def me(principal: Principal = Depends(authorize("read", "user")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def me(
+        principal: Principal = Depends(authorize("read", "user")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         required = await missing_consents(db, principal.user_id) if principal.user_id else []
-        return {"user_id": str(principal.user_id), "workspace_id": str(principal.workspace_id), "role": principal.workspace_role, "consent_required": required}
+        return {
+            "user_id": str(principal.user_id),
+            "workspace_id": str(principal.workspace_id),
+            "role": principal.workspace_role,
+            "consent_required": required,
+        }
 
     @app.get("/v1/me/consents")
-    async def consents(principal: Principal = Depends(authorize("read", "user")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def consents(
+        principal: Principal = Depends(authorize("read", "user")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         required = await missing_consents(db, principal.user_id) if principal.user_id else []
         return {"required": required}
 
     @app.post("/v1/me/consents")
-    async def accept_consent(payload: ConsentIn, principal: Principal = Depends(authorize("update", "user")), db: AsyncSession = Depends(db_session), request: Request = Depends(_request)) -> dict[str, str]:
+    async def accept_consent(
+        payload: ConsentIn,
+        principal: Principal = Depends(authorize("update", "user")),
+        db: AsyncSession = Depends(db_session),
+        request: Request = Depends(_request),
+    ) -> dict[str, str]:
         from younique.models import ConsentAcceptance, ConsentDocument
 
-        doc = (await db.execute(select(ConsentDocument).where(ConsentDocument.id == payload.document_id))).scalar_one_or_none()
+        doc = (
+            await db.execute(
+                select(ConsentDocument).where(ConsentDocument.id == payload.document_id)
+            )
+        ).scalar_one_or_none()
         if doc is None:
             raise not_found()
         db.add(
@@ -256,8 +333,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"status": "accepted"}
 
     @app.get("/v1/me/sessions")
-    async def sessions(principal: Principal = Depends(authorize("read", "session")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
-        rows = (await db.execute(select(Session).where(Session.user_id == principal.user_id))).scalars().all()
+    async def sessions(
+        principal: Principal = Depends(authorize("read", "session")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        rows = (
+            (await db.execute(select(Session).where(Session.user_id == principal.user_id)))
+            .scalars()
+            .all()
+        )
         return {
             "data": [
                 {
@@ -272,47 +356,94 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     @app.post("/v1/me/sessions/{session_id}:revoke")
-    async def revoke_session(session_id: UUID, principal: Principal = Depends(authorize("delete", "session")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
-        row = (await db.execute(select(Session).where(Session.id == session_id, Session.user_id == principal.user_id))).scalar_one_or_none()
+    async def revoke_session(
+        session_id: UUID,
+        principal: Principal = Depends(authorize("delete", "session")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
+        row = (
+            await db.execute(
+                select(Session).where(
+                    Session.id == session_id, Session.user_id == principal.user_id
+                )
+            )
+        ).scalar_one_or_none()
         if row is None:
             raise not_found()
         from datetime import datetime
 
         row.revoked_at = datetime.now(UTC)
         row.revoked_reason = "device_list"
-        await write_audit(db, principal, action="session.revoke", resource_type="session", resource_id=row.id, outcome="allowed")
+        await write_audit(
+            db,
+            principal,
+            action="session.revoke",
+            resource_type="session",
+            resource_id=row.id,
+            outcome="allowed",
+        )
         return {"status": "revoked"}
 
     @app.get("/v1/chats")
-    async def chats(principal: Principal = Depends(authorize("list", "chat")), db: AsyncSession = Depends(db_session), archived: bool = False) -> dict[str, object]:
+    async def chats(
+        principal: Principal = Depends(authorize("list", "chat")),
+        db: AsyncSession = Depends(db_session),
+        archived: bool = False,
+    ) -> dict[str, object]:
         rows = await list_chats(db, principal, archived)
-        return {"data": [{"id": str(row.id), "title": row.title, "archived_at": row.archived_at} for row in rows], "next_cursor": None}
+        return {
+            "data": [
+                {"id": str(row.id), "title": row.title, "archived_at": row.archived_at}
+                for row in rows
+            ],
+            "next_cursor": None,
+        }
 
     @app.post("/v1/chats")
-    async def post_chat(payload: ChatIn, principal: Principal = Depends(authorize("create", "chat")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
+    async def post_chat(
+        payload: ChatIn,
+        principal: Principal = Depends(authorize("create", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
         chat = await create_chat(db, principal, payload.title, payload.model_id)
         return {"id": str(chat.id), "title": chat.title}
 
     @app.delete("/v1/chats/{chat_id}")
-    async def delete_chat(chat_id: UUID, principal: Principal = Depends(authorize("delete", "chat")), db: AsyncSession = Depends(db_session)) -> Response:
+    async def delete_chat(
+        chat_id: UUID,
+        principal: Principal = Depends(authorize("delete", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> Response:
         chat = await get_chat(db, chat_id)
         await archive_chat(db, chat, principal, False)
         return Response(status_code=204)
 
     @app.post("/v1/chats/{chat_id}:restore")
-    async def restore_chat(chat_id: UUID, principal: Principal = Depends(authorize("update", "chat")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
+    async def restore_chat(
+        chat_id: UUID,
+        principal: Principal = Depends(authorize("update", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
         chat = await get_chat(db, chat_id)
         await archive_chat(db, chat, principal, True)
         return {"id": str(chat.id), "status": "active"}
 
     @app.post("/v1/chats/{chat_id}/messages")
-    async def post_message(chat_id: UUID, payload: MessageIn, request: Request, principal: Principal = Depends(authorize("run", "chat")), db: AsyncSession = Depends(db_session)) -> Response:
+    async def post_message(
+        chat_id: UUID,
+        payload: MessageIn,
+        request: Request,
+        principal: Principal = Depends(authorize("run", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> Response:
         await _require_consent(request, principal, db)
         chat = await get_chat(db, chat_id)
         turns = payload.turns if cfg.llm_mode == "fake" else None
 
         async def generate() -> AsyncIterator[str]:
-            async for chunk in send_message(db, principal, chat, payload.text, settings=cfg, turns=turns):
+            async for chunk in send_message(
+                db, principal, chat, payload.text, settings=cfg, turns=turns
+            ):
                 yield chunk
 
         if request.headers.get("accept") == "text/event-stream":
@@ -320,8 +451,91 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         chunks = [chunk async for chunk in generate()]
         return Response("".join(chunks), media_type="text/event-stream")
 
+    @app.get("/v1/chats/{chat_id}/messages")
+    async def chat_messages(
+        chat_id: UUID,
+        principal: Principal = Depends(authorize("read", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        del principal
+        await get_chat(db, chat_id)
+        return {"data": await list_message_views(db, chat_id)}
+
+    @app.get("/v1/chats/{chat_id}/artifacts")
+    async def chat_artifacts(
+        chat_id: UUID,
+        principal: Principal = Depends(authorize("read", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        await get_chat(db, chat_id)
+        return {"data": await list_artifacts(db, principal, chat_id=chat_id)}
+
+    @app.patch("/v1/chats/{chat_id}")
+    async def patch_chat(
+        chat_id: UUID,
+        payload: ChatPatch,
+        principal: Principal = Depends(authorize("update", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        chat = await get_chat(db, chat_id)
+        await update_chat(db, chat, title=payload.title, reasoning_mode=payload.reasoning_mode)
+        return {"id": str(chat.id), "title": chat.title, "reasoning_mode": chat.reasoning_mode}
+
+    @app.post("/v1/chats/{chat_id}/messages:regenerate")
+    async def regenerate(
+        chat_id: UUID,
+        payload: RegenerateIn,
+        request: Request,
+        principal: Principal = Depends(authorize("run", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> Response:
+        await _require_consent(request, principal, db)
+        chat = await get_chat(db, chat_id)
+        message = (
+            await db.execute(
+                select(Message).where(Message.id == payload.message_id, Message.chat_id == chat.id)
+            )
+        ).scalar_one_or_none()
+        if message is None or message.role != "assistant":
+            raise not_found()
+        from datetime import datetime
+
+        message.archived_at = datetime.now(UTC)
+        text = await user_text_before(db, chat.id, message.seq)
+
+        async def generate() -> AsyncIterator[str]:
+            async for chunk in send_message(
+                db, principal, chat, text, settings=cfg, turns=None, record_user=False
+            ):
+                yield chunk
+
+        return StreamingResponse(generate(), media_type="text/event-stream")
+
+    @app.post("/v1/share-links/{link_id}:revoke")
+    async def revoke_link(
+        link_id: UUID,
+        principal: Principal = Depends(authorize("share", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
+        await revoke_share(db, principal, link_id)
+        return {"status": "revoked"}
+
+    @app.get("/v1/dev/mailbox")
+    @public
+    async def mailbox() -> dict[str, object]:
+        if cfg.llm_mode != "fake" or cfg.app_env not in {"local", "test", "e2e"}:
+            raise not_found()
+        from younique.services.mailbox import snapshot
+
+        return {"data": snapshot()}
+
     @app.get("/v1/runs/{run_id}/events")
-    async def events(run_id: UUID, last_event_id: int = 0, principal: Principal = Depends(authorize("read", "run")), db: AsyncSession = Depends(db_session)) -> Response:
+    async def events(
+        run_id: UUID,
+        last_event_id: int = 0,
+        principal: Principal = Depends(authorize("read", "run")),
+        db: AsyncSession = Depends(db_session),
+    ) -> Response:
         rows = await replay_events(db, run_id, last_event_id)
 
         async def generate() -> AsyncIterator[str]:
@@ -331,33 +545,107 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return StreamingResponse(generate(), media_type="text/event-stream")
 
     @app.post("/v1/runs/{run_id}:cancel")
-    async def cancel(run_id: UUID, principal: Principal = Depends(authorize("update", "run")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
+    async def cancel(
+        run_id: UUID,
+        principal: Principal = Depends(authorize("update", "run")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
         from younique.models import Run
+        from younique.services.cancellation import mark
 
+        mark(str(run_id))
         run = (await db.execute(select(Run).where(Run.id == run_id))).scalar_one_or_none()
         if run is None:
-            raise not_found()
+            return {"status": "cancelled"}
         run.status = "cancelled"
         run.error_code = "run_cancelled"
+        streaming = (
+            (
+                await db.execute(
+                    select(Message).where(Message.run_id == run.id, Message.status == "streaming")
+                )
+            )
+            .scalars()
+            .all()
+        )
+        for message in streaming:
+            message.status = "stopped"
         return {"status": "cancelled"}
 
     @app.get("/v1/approvals")
-    async def approvals(principal: Principal = Depends(authorize("list", "approval")), db: AsyncSession = Depends(db_session), status: str = "pending") -> dict[str, object]:
-        rows = (await db.execute(select(Approval).where(Approval.workspace_id == principal.workspace_id, Approval.status == status))).scalars().all()
-        return {"data": [{"id": str(row.id), "tool_key": row.tool_key, "status": row.status, "summary": row.summary} for row in rows]}
+    async def approvals(
+        principal: Principal = Depends(authorize("list", "approval")),
+        db: AsyncSession = Depends(db_session),
+        status: str = "pending",
+    ) -> dict[str, object]:
+        rows = (
+            (
+                await db.execute(
+                    select(Approval).where(
+                        Approval.workspace_id == principal.workspace_id, Approval.status == status
+                    )
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return {
+            "data": [
+                {
+                    "id": str(row.id),
+                    "tool_key": row.tool_key,
+                    "status": row.status,
+                    "summary": row.summary,
+                }
+                for row in rows
+            ]
+        }
 
     @app.post("/v1/approvals/{approval_id}:decide")
-    async def decide(approval_id: UUID, payload: DecisionIn, principal: Principal = Depends(authorize("decide_approval", "approval")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
-        row = await decide_approval(db, principal, approval_id, payload.decision, payload.remember, cfg)
+    async def decide(
+        approval_id: UUID,
+        payload: DecisionIn,
+        principal: Principal = Depends(authorize("decide_approval", "approval")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
+        row = await decide_approval(
+            db, principal, approval_id, payload.decision, payload.remember, cfg
+        )
         return {"id": str(row.id), "status": row.status}
 
     @app.get("/v1/tool-policies")
-    async def get_policies(principal: Principal = Depends(authorize("read", "tool_policy")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
-        rows = (await db.execute(select(ToolPolicy).where(ToolPolicy.workspace_id == principal.workspace_id))).scalars().all()
-        return {"data": [{"id": str(row.id), "tool_key": row.tool_key, "mode": row.mode, "allow_when_tainted": row.allow_when_tainted, "risk": row.risk} for row in rows]}
+    async def get_policies(
+        principal: Principal = Depends(authorize("read", "tool_policy")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        rows = (
+            (
+                await db.execute(
+                    select(ToolPolicy).where(ToolPolicy.workspace_id == principal.workspace_id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return {
+            "data": [
+                {
+                    "id": str(row.id),
+                    "tool_key": row.tool_key,
+                    "mode": row.mode,
+                    "allow_when_tainted": row.allow_when_tainted,
+                    "risk": row.risk,
+                }
+                for row in rows
+            ]
+        }
 
     @app.put("/v1/tool-policies")
-    async def put_policy(payload: PolicyIn, principal: Principal = Depends(authorize("update", "tool_policy")), db: AsyncSession = Depends(db_session)) -> dict[str, str]:
+    async def put_policy(
+        payload: PolicyIn,
+        principal: Principal = Depends(authorize("update", "tool_policy")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, str]:
         if payload.mode == "always_allow":
             from younique.services.accounts import fresh_reauth
 
@@ -367,11 +655,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise reauth_required()
         row = (
             await db.execute(
-                select(ToolPolicy).where(ToolPolicy.workspace_id == principal.workspace_id, ToolPolicy.tool_key == payload.tool_key)
+                select(ToolPolicy).where(
+                    ToolPolicy.workspace_id == principal.workspace_id,
+                    ToolPolicy.tool_key == payload.tool_key,
+                )
             )
         ).scalar_one_or_none()
         if row is None:
-            row = ToolPolicy(workspace_id=principal.workspace_id, tool_key=payload.tool_key, mode=payload.mode, allow_when_tainted=payload.allow_when_tainted, risk="high")
+            row = ToolPolicy(
+                workspace_id=principal.workspace_id,
+                tool_key=payload.tool_key,
+                mode=payload.mode,
+                allow_when_tainted=payload.allow_when_tainted,
+                risk="high",
+            )
             db.add(row)
         else:
             row.mode = payload.mode
@@ -379,57 +676,292 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"status": "saved"}
 
     @app.get("/v1/models")
-    async def models(principal: Principal = Depends(authorize("list", "model")), db: AsyncSession = Depends(db_session), available: bool = False) -> dict[str, object]:
+    async def models(
+        principal: Principal = Depends(authorize("list", "model")),
+        db: AsyncSession = Depends(db_session),
+        available: bool = False,
+    ) -> dict[str, object]:
         rows = await list_models(db, principal, available)
-        return {"data": [{"id": str(row.id), "model_ref": row.model_ref, "display_name": row.display_name, "supports_tools": row.supports_tools, "supports_reasoning": row.supports_reasoning} for row in rows]}
+        return {
+            "data": [
+                {
+                    "id": str(row.id),
+                    "model_ref": row.model_ref,
+                    "display_name": row.display_name,
+                    "supports_tools": row.supports_tools,
+                    "supports_reasoning": row.supports_reasoning,
+                }
+                for row in rows
+            ]
+        }
 
     @app.get("/v1/provider-keys")
-    async def keys(principal: Principal = Depends(authorize("list", "provider_key")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
-        rows = (await db.execute(select(ProviderKey).where(ProviderKey.workspace_id == principal.workspace_id))).scalars().all()
+    async def keys(
+        principal: Principal = Depends(authorize("list", "provider_key")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        rows = (
+            (
+                await db.execute(
+                    select(ProviderKey).where(ProviderKey.workspace_id == principal.workspace_id)
+                )
+            )
+            .scalars()
+            .all()
+        )
         data = []
         for row in rows:
-            provider = (await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))).scalar_one()
+            provider = (
+                await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))
+            ).scalar_one()
             data.append(provider_key_view(row, provider.key))
         return {"data": data}
 
     @app.post("/v1/provider-keys")
-    async def post_key(payload: KeyIn, principal: Principal = Depends(authorize("create", "provider_key")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
-        row = await save_provider_key(db, principal, provider_key=payload.provider, label=payload.label, secret=payload.secret, settings=cfg, base_url=payload.base_url)
-        provider = (await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))).scalar_one()
+    async def post_key(
+        payload: KeyIn,
+        principal: Principal = Depends(authorize("create", "provider_key")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        row = await save_provider_key(
+            db,
+            principal,
+            provider_key=payload.provider,
+            label=payload.label,
+            secret=payload.secret,
+            settings=cfg,
+            base_url=payload.base_url,
+        )
+        provider = (
+            await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))
+        ).scalar_one()
         return provider_key_view(row, provider.key)
 
+    @app.post("/v1/provider-keys/{key_id}:rotate")
+    async def rotate_key(
+        key_id: UUID,
+        payload: RotateIn,
+        principal: Principal = Depends(authorize("update", "provider_key")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        row = await rotate_provider_key(db, principal, key_id, payload.secret, cfg)
+        provider = (
+            await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))
+        ).scalar_one()
+        return provider_key_view(row, provider.key)
+
+    @app.post("/v1/provider-keys/{key_id}:revoke")
+    async def revoke_key(
+        key_id: UUID,
+        principal: Principal = Depends(authorize("delete", "provider_key")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        row = await revoke_provider_key(db, principal, key_id)
+        provider = (
+            await db.execute(select(ModelProvider).where(ModelProvider.id == row.provider_id))
+        ).scalar_one()
+        return provider_key_view(row, provider.key)
+
+    @app.get("/v1/auth/accounts")
+    async def accounts(
+        principal: Principal = Depends(authorize("read", "session")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        return {"data": await list_accounts(db, principal)}
+
     @app.get("/v1/connectors")
-    async def connectors(principal: Principal = Depends(authorize("list", "connection"))) -> dict[str, object]:
+    async def connectors(
+        principal: Principal = Depends(authorize("list", "connection")),
+    ) -> dict[str, object]:
         return {"data": catalogue()}
 
+    @app.get("/v1/connections")
+    async def connection_list(
+        principal: Principal = Depends(authorize("list", "connection")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        rows = (
+            (
+                await db.execute(
+                    select(Connection).where(Connection.workspace_id == principal.workspace_id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return {
+            "data": [
+                {"id": str(row.id), "connector_key": row.connector_key, "status": row.status}
+                for row in rows
+            ]
+        }
+
     @app.post("/v1/connections/smtp")
-    async def smtp(payload: SmtpIn, principal: Principal = Depends(authorize("create", "connection")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
-        row = await connect_smtp(db, principal, host=payload.host, port=payload.port, username=payload.username, password=payload.password, settings=cfg)
-        return {"id": str(row.id), "connector_key": row.connector_key, "enabled_bundles": row.enabled_bundles, "tools": bundle_tools("smtp", set(row.enabled_bundles))}
+    async def smtp(
+        payload: SmtpIn,
+        principal: Principal = Depends(authorize("create", "connection")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        row = await connect_smtp(
+            db,
+            principal,
+            host=payload.host,
+            port=payload.port,
+            username=payload.username,
+            password=payload.password,
+            settings=cfg,
+        )
+        return {
+            "id": str(row.id),
+            "connector_key": row.connector_key,
+            "enabled_bundles": row.enabled_bundles,
+            "tools": bundle_tools("smtp", set(row.enabled_bundles)),
+        }
+
+    @app.get("/v1/artifacts")
+    async def artifacts(
+        principal: Principal = Depends(authorize("list", "artifact")),
+        db: AsyncSession = Depends(db_session),
+        chat_id: UUID | None = None,
+        status: str | None = None,
+        origin: str | None = None,
+    ) -> dict[str, object]:
+        return {
+            "data": await list_artifacts(
+                db, principal, chat_id=chat_id, status=status, origin=origin
+            )
+        }
 
     @app.post("/v1/artifacts")
-    async def upload(request: Request, principal: Principal = Depends(authorize("create", "artifact")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def upload(
+        request: Request,
+        principal: Principal = Depends(authorize("create", "artifact")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         body = json.loads(request.state.cached_body or b"{}")
         raw = body.get("content_base64")
-        import base64
+        chat_raw = body.get("chat_id")
+        chat_id = UUID(str(chat_raw)) if chat_raw else None
+        if isinstance(raw, str):
+            import base64
 
-        data = base64.b64decode(raw) if isinstance(raw, str) else b""
-        version = await ingest_upload(db, principal, name=str(body.get("name") or "file"), declared_mime=str(body.get("declared_mime") or "application/octet-stream"), data=data, timeout_s=float(body.get("timeout_s") or 30))
-        return {"artifact_id": str(version.artifact_id), "version_id": str(version.id), "status": version.status}
+            data = base64.b64decode(raw)
+            version = await ingest_upload(
+                db,
+                principal,
+                name=str(body.get("name") or "file"),
+                declared_mime=str(body.get("declared_mime") or "application/octet-stream"),
+                data=data,
+                timeout_s=float(body.get("timeout_s") or 30),
+                settings=cfg,
+                chat_id=chat_id,
+            )
+            return {
+                "artifact_id": str(version.artifact_id),
+                "version_id": str(version.id),
+                "status": version.status,
+            }
+        return await reserve_upload(
+            db,
+            principal,
+            name=str(body.get("name") or "file"),
+            declared_mime=str(body.get("declared_mime") or "application/octet-stream"),
+            byte_size=int(body.get("byte_size") or 0),
+            settings=cfg,
+            chat_id=chat_id,
+        )
+
+    @app.put("/v1/artifacts/{artifact_id}/content")
+    async def put_content(
+        artifact_id: UUID,
+        request: Request,
+        principal: Principal = Depends(authorize("update", "artifact")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        data = request.state.cached_body or b""
+        version = await accept_upload(
+            db,
+            principal,
+            artifact_id,
+            data,
+            token=request.headers.get("x-upload-token") or "",
+            settings=cfg,
+            timeout_s=float(request.headers.get("x-scan-timeout") or 30),
+        )
+        return {
+            "artifact_id": str(version.artifact_id),
+            "version_id": str(version.id),
+            "status": version.status,
+            "detected_mime": version.detected_mime,
+        }
+
+    @app.get("/v1/artifacts/{artifact_id}")
+    async def artifact(
+        artifact_id: UUID,
+        principal: Principal = Depends(authorize("read", "artifact")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        del principal
+        return await artifact_detail(db, artifact_id)
+
+    @app.get("/v1/artifacts/{artifact_id}/preview")
+    async def artifact_preview(
+        artifact_id: UUID,
+        principal: Principal = Depends(authorize("read", "artifact")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        del principal
+        return await preview_payload(db, artifact_id)
 
     @app.get("/v1/artifacts/{artifact_id}/download")
-    async def download(artifact_id: UUID, principal: Principal = Depends(authorize("read", "artifact")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def download(
+        artifact_id: UUID,
+        principal: Principal = Depends(authorize("read", "artifact")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
+        artifact_row = (
+            await db.execute(select(Artifact).where(Artifact.id == artifact_id))
+        ).scalar_one_or_none()
         version = (
-            await db.execute(select(ArtifactVersion).where(ArtifactVersion.artifact_id == artifact_id).order_by(ArtifactVersion.version.desc()))
-        ).scalars().first()
-        if version is None:
+            (
+                await db.execute(
+                    select(ArtifactVersion)
+                    .where(ArtifactVersion.artifact_id == artifact_id)
+                    .order_by(ArtifactVersion.version.desc())
+                )
+            )
+            .scalars()
+            .first()
+        )
+        if version is None or artifact_row is None:
             raise not_found()
-        return download_version(version)
+        payload = download_version(version, artifact_row.name)
+        await write_audit(
+            db,
+            principal,
+            action="artifact.download",
+            resource_type="artifact",
+            resource_id=artifact_id,
+            outcome="allowed",
+        )
+        return payload
 
     @app.post("/v1/chats/{chat_id}/share-links")
-    async def share(chat_id: UUID, payload: ShareIn, principal: Principal = Depends(authorize("share", "chat")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def share(
+        chat_id: UUID,
+        payload: ShareIn,
+        principal: Principal = Depends(authorize("share", "chat")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         await get_chat(db, chat_id)
-        link, token = await create_share(db, principal, resource_type="chat", resource_id=chat_id, password=payload.password, include_reasoning=payload.include_reasoning)
+        link, token = await create_share(
+            db,
+            principal,
+            resource_type="chat",
+            resource_id=chat_id,
+            password=payload.password,
+            include_reasoning=payload.include_reasoning,
+        )
         return {"id": str(link.id), "token": token, "role": link.role}
 
     @app.get("/v1/public/{token}")
@@ -442,18 +974,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     @app.get("/v1/usage")
-    async def usage(principal: Principal = Depends(authorize("read", "usage")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def usage(
+        principal: Principal = Depends(authorize("read", "usage")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         from sqlalchemy import func
 
         from younique.models import UsageEvent
 
         total = (
-            await db.execute(select(func.coalesce(func.sum(UsageEvent.cost_micro_usd), 0)).where(UsageEvent.workspace_id == principal.workspace_id))
+            await db.execute(
+                select(func.coalesce(func.sum(UsageEvent.cost_micro_usd), 0)).where(
+                    UsageEvent.workspace_id == principal.workspace_id
+                )
+            )
         ).scalar_one()
         return {"cost_micro_usd": int(total)}
 
     @app.post("/v1/usage/events")
-    async def post_usage(request: Request, principal: Principal = Depends(authorize("create", "usage")), db: AsyncSession = Depends(db_session)) -> dict[str, object]:
+    async def post_usage(
+        request: Request,
+        principal: Principal = Depends(authorize("create", "usage")),
+        db: AsyncSession = Depends(db_session),
+    ) -> dict[str, object]:
         body = json.loads(request.state.cached_body or b"{}")
         price = PriceSnapshot(
             input_micro_usd_per_mtok=int(body["input_micro_usd_per_mtok"]),
@@ -474,20 +1017,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             price=price,
             request_id=str(body["request_id"]),
         )
-        return {"recorded": event is not None, "cost_micro_usd": None if event is None else event.cost_micro_usd}
+        return {
+            "recorded": event is not None,
+            "cost_micro_usd": None if event is None else event.cost_micro_usd,
+        }
 
-    @app.post("/internal/tasks/outbox-drain")
-    @public
-    async def outbox(request: Request) -> dict[str, str]:
-        await verify_internal_caller(request.headers.get("authorization"), cfg)
-        return {"status": "drained"}
+    from younique.tasks.http import mount_worker_routes
 
-    @app.post("/internal/events/gcs-upload")
-    @public
-    async def gcs_event(request: Request) -> dict[str, str]:
-        await verify_internal_caller(request.headers.get("authorization"), cfg)
-        return {"status": "accepted"}
-
+    mount_worker_routes(app, cfg)
     return app
 
 
@@ -535,7 +1072,9 @@ async def db_session(request: Request) -> AsyncIterator[AsyncSession]:
     async with maker() as session:
         async with session.begin():
             if isinstance(principal, Principal):
-                await apply_tenant(session, workspace_id=principal.workspace_id, user_id=principal.user_id)
+                await apply_tenant(
+                    session, workspace_id=principal.workspace_id, user_id=principal.user_id
+                )
             yield session
 
 
@@ -581,7 +1120,12 @@ async def _idempotency(request: Request, db: AsyncSession, principal: Principal)
         )
     ).scalar_one_or_none()
     if existing and existing.request_sha256 != digest:
-        raise problem(409, "idempotency_key_reuse", "Idempotency key reuse", "This key was used with a different body.")
+        raise problem(
+            409,
+            "idempotency_key_reuse",
+            "Idempotency key reuse",
+            "This key was used with a different body.",
+        )
     if existing and existing.state == "completed" and existing.response_body is not None:
         raise _Replay(existing.response_status or 200, existing.response_body)
     if existing is None:

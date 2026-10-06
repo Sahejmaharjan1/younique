@@ -27,7 +27,9 @@ class User(UUIDPrimaryKey, AuditColumns, SoftDelete, Base):
     display_name: Mapped[str] = mapped_column(Text, nullable=False)
     timezone: Mapped[str] = mapped_column(Text, nullable=False, server_default="UTC")
     default_workspace_id: Mapped[uuid.UUID | None] = mapped_column(
-        Uuid, ForeignKey("app.workspaces.id", use_alter=True, name="fk_users_default_workspace"), nullable=True
+        Uuid,
+        ForeignKey("app.workspaces.id", use_alter=True, name="fk_users_default_workspace"),
+        nullable=True,
     )
     preferences: Mapped[dict[str, object]] = mapped_column(
         JSONB, nullable=False, server_default=text("'{}'::jsonb")

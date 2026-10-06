@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
+  },
+  "response": {
+    "status": 200,
+    "json": {"id": "msg-1", "labelIds": ["SENT"]}
+  }
+}

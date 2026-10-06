@@ -1,4 +1,10 @@
-from younique_sdk import ConnectorManifest, PermissionBundle, tool
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+from types import ModuleType
+
+from younique_sdk import ConnectorManifest, PermissionBundle
 
 MANIFEST = ConnectorManifest(
     key="gmail",
@@ -34,37 +40,18 @@ MANIFEST = ConnectorManifest(
 )
 
 
-def summarize_for_approval(arguments: dict[str, object], flagged: list[str]) -> dict[str, object]:
-    return {
-        "headline": f"Send Gmail to {arguments.get('to')}",
-        "details": [{"label": "To", "value": arguments.get("to"), "flagged": "to" in flagged}],
-        "body_preview": str(arguments.get("body") or "")[:280],
-        "irreversible": True,
-        "flagged_args": flagged,
-    }
+def _load(filename: str) -> ModuleType:
+    path = Path(__file__).resolve().parent / "tools" / filename
+    spec = importlib.util.spec_from_file_location(f"younique_connector_gmail_{path.stem}", path)
+    if spec is None or spec.loader is None:
+        raise FileNotFoundError(path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-@tool(key="gmail.send_email", title="Send Gmail", description="Send a Gmail message.", risk="high", bundle="send")
-async def send_email(ctx, arguments: dict[str, object]) -> dict[str, object]:
-    ctx.require_grant(str(arguments.get("mailbox") or "me"), "send")
-    await ctx.http.request(
-        "POST",
-        "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
-        headers={"Authorization": f"Bearer {ctx.secrets.get('access_token', '')}"},
-        json={"raw": str(arguments.get("raw") or "")},
-    )
-    return {"sent": True}
-
-
-@tool(key="gmail.get_message", title="Read Gmail", description="Read one Gmail message.", risk="low", bundle="read")
-async def get_message(ctx, arguments: dict[str, object]) -> dict[str, object]:
-    ctx.require_grant(str(arguments.get("mailbox") or "me"), "read")
-    response = await ctx.http.request(
-        "GET",
-        f"https://gmail.googleapis.com/gmail/v1/users/me/messages/{arguments.get('id')}",
-        headers={"Authorization": f"Bearer {ctx.secrets.get('access_token', '')}"},
-    )
-    return {"body": response.text, "trust": "untrusted"}
-
-
+_api = _load("api.py")
+send_email = _api.send_email
+get_message = _api.get_message
+summarize_for_approval = _api.summarize_for_approval
 TOOLS = [send_email, get_message]

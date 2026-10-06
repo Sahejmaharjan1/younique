@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     step_up_seconds: int = 300
     rate_limit_per_minute: int = 120
     llm_mode: str = "fake"
+    stream_pace_ms: int = 0
+    gcs_mode: str = "memory"
+    cloud_tasks_url: str = ""
+    pubsub_url: str = ""
+    scanner_url: str = ""
+    scanner_mode: str = "builtin"
+    upload_token_secret: str = "dev-upload"
+    max_upload_bytes: int = 100_000_000
 
 
 def get_settings() -> Settings:

@@ -36,7 +36,9 @@ class Connection(UUIDPrimaryKey, AuditColumns, SoftDelete, Base):
         Uuid, ForeignKey("app.workspaces.id"), nullable=False
     )
     connector_key: Mapped[str] = mapped_column(Text, nullable=False)
-    owner_user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.users.id"), nullable=False)
+    owner_user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("app.users.id"), nullable=False
+    )
     external_account_id: Mapped[str | None] = mapped_column(Text, nullable=True)
     external_account_label: Mapped[str | None] = mapped_column(Text, nullable=True)
     granted_scopes: Mapped[list[str]] = mapped_column(
@@ -48,7 +50,9 @@ class Connection(UUIDPrimaryKey, AuditColumns, SoftDelete, Base):
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default="pending")
     health: Mapped[str] = mapped_column(Text, nullable=False, server_default="unknown")
     last_checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    uses_byo_oauth_client: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    uses_byo_oauth_client: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default="false"
+    )
     config: Mapped[dict[str, object]] = mapped_column(
         JSONB, nullable=False, server_default=text("'{}'::jsonb")
     )
@@ -86,7 +90,9 @@ class ConnectionSecret(UUIDPrimaryKey, Base):
     access_token_ct: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
     refresh_token_ct: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
     secret_ct: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
-    access_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    access_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     key_version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
 
 
@@ -207,7 +213,9 @@ class ShareLink(UUIDPrimaryKey, Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     view_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
     last_viewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    created_by: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("app.users.id"), nullable=True)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("app.users.id"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

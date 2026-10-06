@@ -361,6 +361,56 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Patch Chat",
+        "operationId": "patch_chat_v1_chats__chat_id__patch",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Patch Chat V1 Chats  Chat Id  Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/chats/{chat_id}:restore": {
@@ -448,6 +498,200 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Chat Messages",
+        "operationId": "chat_messages_v1_chats__chat_id__messages_get",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Chat Messages V1 Chats  Chat Id  Messages Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chats/{chat_id}/artifacts": {
+      "get": {
+        "summary": "Chat Artifacts",
+        "operationId": "chat_artifacts_v1_chats__chat_id__artifacts_get",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Chat Artifacts V1 Chats  Chat Id  Artifacts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chats/{chat_id}/messages:regenerate": {
+      "post": {
+        "summary": "Regenerate",
+        "operationId": "regenerate_v1_chats__chat_id__messages_regenerate_post",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/share-links/{link_id}:revoke": {
+      "post": {
+        "summary": "Revoke Link",
+        "operationId": "revoke_link_v1_share_links__link_id__revoke_post",
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Link Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Revoke Link V1 Share Links  Link Id  Revoke Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/dev/mailbox": {
+      "get": {
+        "summary": "Mailbox",
+        "operationId": "mailbox_v1_dev_mailbox_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Mailbox V1 Dev Mailbox Get"
                 }
               }
             }
@@ -803,6 +1047,120 @@
         }
       }
     },
+    "/v1/provider-keys/{key_id}:rotate": {
+      "post": {
+        "summary": "Rotate Key",
+        "operationId": "rotate_key_v1_provider_keys__key_id__rotate_post",
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Key Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RotateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Rotate Key V1 Provider Keys  Key Id  Rotate Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/provider-keys/{key_id}:revoke": {
+      "post": {
+        "summary": "Revoke Key",
+        "operationId": "revoke_key_v1_provider_keys__key_id__revoke_post",
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Key Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Revoke Key V1 Provider Keys  Key Id  Revoke Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/accounts": {
+      "get": {
+        "summary": "Accounts",
+        "operationId": "accounts_v1_auth_accounts_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Accounts V1 Auth Accounts Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/connectors": {
       "get": {
         "summary": "Connectors",
@@ -816,6 +1174,26 @@
                   "additionalProperties": true,
                   "type": "object",
                   "title": "Response Connectors V1 Connectors Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/connections": {
+      "get": {
+        "summary": "Connection List",
+        "operationId": "connection_list_v1_connections_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Connection List V1 Connections Get"
                 }
               }
             }
@@ -864,6 +1242,85 @@
       }
     },
     "/v1/artifacts": {
+      "get": {
+        "summary": "Artifacts",
+        "operationId": "artifacts_v1_artifacts_get",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Chat Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Origin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Artifacts V1 Artifacts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Upload",
         "operationId": "upload_v1_artifacts_post",
@@ -873,9 +1330,135 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "additionalProperties": true,
                   "type": "object",
+                  "additionalProperties": true,
                   "title": "Response Upload V1 Artifacts Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/artifacts/{artifact_id}/content": {
+      "put": {
+        "summary": "Put Content",
+        "operationId": "put_content_v1_artifacts__artifact_id__content_put",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Artifact Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Put Content V1 Artifacts  Artifact Id  Content Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/artifacts/{artifact_id}": {
+      "get": {
+        "summary": "Artifact",
+        "operationId": "artifact_v1_artifacts__artifact_id__get",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Artifact Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Artifact V1 Artifacts  Artifact Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/artifacts/{artifact_id}/preview": {
+      "get": {
+        "summary": "Artifact Preview",
+        "operationId": "artifact_preview_v1_artifacts__artifact_id__preview_get",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Artifact Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Artifact Preview V1 Artifacts  Artifact Id  Preview Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -1070,6 +1653,54 @@
         }
       }
     },
+    "/internal/tasks/agent-run": {
+      "post": {
+        "summary": "Agent Run",
+        "operationId": "agent_run_internal_tasks_agent_run_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/tasks/pipeline-run": {
+      "post": {
+        "summary": "Pipeline Run",
+        "operationId": "pipeline_run_internal_tasks_pipeline_run_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/tasks/artifact-scan": {
+      "post": {
+        "summary": "Artifact Scan",
+        "operationId": "artifact_scan_internal_tasks_artifact_scan_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/internal/tasks/outbox-drain": {
       "post": {
         "summary": "Outbox",
@@ -1079,13 +1710,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "type": "object",
-                  "title": "Response Outbox Internal Tasks Outbox Drain Post"
-                }
+                "schema": {}
               }
             }
           }
@@ -1094,20 +1719,14 @@
     },
     "/internal/events/gcs-upload": {
       "post": {
-        "summary": "Gcs Event",
-        "operationId": "gcs_event_internal_events_gcs_upload_post",
+        "summary": "Gcs Upload",
+        "operationId": "gcs_upload_internal_events_gcs_upload_post",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "type": "object",
-                  "title": "Response Gcs Event Internal Events Gcs Upload Post"
-                }
+                "schema": {}
               }
             }
           }
@@ -1139,6 +1758,34 @@
         },
         "type": "object",
         "title": "ChatIn"
+      },
+      "ChatPatch": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "reasoning_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reasoning Mode"
+          }
+        },
+        "type": "object",
+        "title": "ChatPatch"
       },
       "ConsentIn": {
         "properties": {
@@ -1286,6 +1933,33 @@
           "mode"
         ],
         "title": "PolicyIn"
+      },
+      "RegenerateIn": {
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Message Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message_id"
+        ],
+        "title": "RegenerateIn"
+      },
+      "RotateIn": {
+        "properties": {
+          "secret": {
+            "type": "string",
+            "title": "Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "secret"
+        ],
+        "title": "RotateIn"
       },
       "SessionIn": {
         "properties": {

@@ -9,7 +9,10 @@ from younique.core.redact import redact_text, redact_value
 def test_known_secret_corpus_does_not_leak() -> None:
     corpus = {
         "api_key": "sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789",
-        "nested": {"authorization": "Bearer ya29.super-secret-token-value", "note": "sk-proj-abcdefghijklmnopqrstuvwxyz"},
+        "nested": {
+            "authorization": "Bearer ya29.super-secret-token-value",
+            "note": "sk-proj-abcdefghijklmnopqrstuvwxyz",
+        },
         "password": "hunter2",
         "prompt": "please use sk-abcdefghijklmnopqrstuvwxyz0123456789 now",
         "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.signaturevalue",

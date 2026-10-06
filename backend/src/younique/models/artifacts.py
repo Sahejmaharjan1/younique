@@ -103,7 +103,9 @@ class ChatArtifact(UUIDPrimaryKey, Base):
         Uuid, ForeignKey("app.workspaces.id"), nullable=False
     )
     chat_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.chats.id"), nullable=False)
-    artifact_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("app.artifacts.id"), nullable=False)
+    artifact_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("app.artifacts.id"), nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

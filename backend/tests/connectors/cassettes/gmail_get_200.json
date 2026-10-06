@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://gmail.googleapis.com/gmail/v1/users/me/messages/18"
+  },
+  "response": {
+    "status": 200,
+    "json": {"id": "18", "snippet": "Hello"}
+  }
+}

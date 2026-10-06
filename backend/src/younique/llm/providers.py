@@ -24,7 +24,7 @@ class LLMProvider(Protocol):
 
 class FakeChatModel:
     def __init__(self, turns: list[ModelTurn] | None = None) -> None:
-        self.turns = list(turns or [ModelTurn(text="Hello from Younique.")])
+        self.turns = [ModelTurn(text="Hello from Younique.")] if turns is None else list(turns)
         self.calls = 0
 
     async def stream(
@@ -38,7 +38,9 @@ class FakeChatModel:
         self.calls += 1
         turn = self.turns.pop(0) if self.turns else ModelTurn(text="")
         if turn.reasoning:
-            yield StreamEvent(kind="reasoning", text=turn.reasoning, reasoning_tokens=turn.reasoning_tokens)
+            yield StreamEvent(
+                kind="reasoning", text=turn.reasoning, reasoning_tokens=turn.reasoning_tokens
+            )
         if turn.text:
             yield StreamEvent(kind="text", text=turn.text)
         for call in turn.tool_calls:

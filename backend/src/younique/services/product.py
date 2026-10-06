@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import hashlib
+import asyncio
 import json
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime, timedelta
@@ -15,13 +15,11 @@ from uuid6 import uuid7
 
 from younique.agents.graph import compile_graph
 from younique.agents.taint import flag_untrusted_arguments
-from younique.artifacts.scan import advance, scan_bytes
 from younique.authz.principal import Principal
 from younique.connectors.registry import manifests, tools_for_bundles
 from younique.core.config import Settings
 from younique.core.db import apply_tenant
 from younique.core.errors import (
-    artifact_not_clean,
     not_found,
     permission_denied,
     problem,
@@ -33,8 +31,6 @@ from younique.crypto.envelope import build_kek, cache_dek, cached_dek, decrypt, 
 from younique.llm.types import PriceSnapshot
 from younique.models import (
     Approval,
-    Artifact,
-    ArtifactScan,
     ArtifactVersion,
     AuditLog,
     Chat,
@@ -54,6 +50,7 @@ from younique.models import (
     UsageRequestDedupe,
 )
 from younique.services.accounts import fresh_reauth
+from younique.services.scripted_turns import refusal_from, scripted_turns, without_reasoning
 from younique.usage.cost import cost_micro_usd
 
 _GRAPH: Any = None
@@ -98,7 +95,9 @@ async def write_audit(
     )
 
 
-async def create_chat(db: AsyncSession, principal: Principal, title: str, model_id: UUID | None) -> Chat:
+async def create_chat(
+    db: AsyncSession, principal: Principal, title: str, model_id: UUID | None
+) -> Chat:
     chat = Chat(
         workspace_id=_ws(principal),
         title=title or "New chat",
@@ -131,6 +130,142 @@ async def archive_chat(db: AsyncSession, chat: Chat, principal: Principal, resto
     chat.archived_by = None if restore else principal.user_id
 
 
+async def list_message_views(db: AsyncSession, chat_id: UUID) -> list[dict[str, object]]:
+    rows = (
+        (await db.execute(select(Message).where(Message.chat_id == chat_id).order_by(Message.seq)))
+        .scalars()
+        .all()
+    )
+    views: list[dict[str, object]] = []
+    for message in rows:
+        parts = (
+            (
+                await db.execute(
+                    select(MessagePart)
+                    .where(MessagePart.message_id == message.id)
+                    .order_by(MessagePart.seq)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        views.append(
+            {
+                "id": str(message.id),
+                "role": message.role,
+                "status": message.status,
+                "seq": message.seq,
+                "archived": message.archived_at is not None,
+                "error_code": message.error_code,
+                "run_id": str(message.run_id) if message.run_id else None,
+                "parts": [
+                    {"kind": part.kind, "content": part.content, "data": part.data}
+                    for part in parts
+                ],
+            }
+        )
+    return views
+
+
+async def update_chat(
+    db: AsyncSession,
+    chat: Chat,
+    *,
+    title: str | None,
+    reasoning_mode: str | None,
+) -> Chat:
+    if title is not None:
+        chat.title = title
+    if reasoning_mode is not None:
+        if reasoning_mode not in {"inherit", "on", "off"}:
+            raise problem(
+                422, "validation_failed", "Validation failed", "reasoning_mode is invalid."
+            )
+        chat.reasoning_mode = reasoning_mode
+    return chat
+
+
+async def user_text_before(db: AsyncSession, chat_id: UUID, seq: int) -> str:
+    message = (
+        (
+            await db.execute(
+                select(Message)
+                .where(
+                    Message.chat_id == chat_id,
+                    Message.role == "user",
+                    Message.seq < seq,
+                    Message.archived_at.is_(None),
+                )
+                .order_by(Message.seq.desc())
+            )
+        )
+        .scalars()
+        .first()
+    )
+    if message is None:
+        return ""
+    part = (
+        (
+            await db.execute(
+                select(MessagePart)
+                .where(MessagePart.message_id == message.id, MessagePart.kind == "text")
+                .order_by(MessagePart.seq)
+            )
+        )
+        .scalars()
+        .first()
+    )
+    return part.content if part and part.content else ""
+
+
+async def revoke_share(db: AsyncSession, principal: Principal, link_id: UUID) -> None:
+    link = (
+        await db.execute(
+            select(ShareLink).where(
+                ShareLink.id == link_id, ShareLink.workspace_id == _ws(principal)
+            )
+        )
+    ).scalar_one_or_none()
+    if link is None:
+        raise not_found()
+    link.revoked_at = _now()
+    await write_audit(
+        db,
+        principal,
+        action="share.revoke",
+        resource_type=link.resource_type,
+        resource_id=link.resource_id,
+        outcome="allowed",
+    )
+
+
+def _prepared_turns(
+    text: str,
+    turns: list[dict[str, Any]] | None,
+    chat: Chat,
+    settings: Settings,
+) -> list[dict[str, Any]]:
+    scripted = scripted_turns(text, turns, llm_mode=settings.llm_mode)
+    if chat.reasoning_mode == "off":
+        return without_reasoning(scripted)
+    return scripted
+
+
+def _chunks(text: str, size: int) -> list[str]:
+    if not text:
+        return []
+    return [text[index : index + size] for index in range(0, len(text), size)]
+
+
+async def _cancelled(db: AsyncSession, run_id: UUID) -> bool:
+    from younique.services.cancellation import is_marked
+
+    if is_marked(str(run_id)):
+        return True
+    status = (await db.execute(select(Run.status).where(Run.id == run_id))).scalar_one()
+    return status == "cancelled"
+
+
 def sse(event: str, data: dict[str, Any], seq: int) -> str:
     payload = json.dumps(data, separators=(",", ":"), default=str)
     return f"id: {seq}\nevent: {event}\ndata: {payload}\n\n"
@@ -144,30 +279,36 @@ async def send_message(
     *,
     settings: Settings,
     turns: list[dict[str, Any]] | None = None,
+    record_user: bool = True,
 ) -> AsyncIterator[str]:
     seq_value = (
-        await db.execute(select(func.coalesce(func.max(Message.seq), 0)).where(Message.chat_id == chat.id))
-    ).scalar_one()
-    user_message = Message(
-        workspace_id=_ws(principal),
-        chat_id=chat.id,
-        role="user",
-        seq=int(seq_value) + 1,
-        status="complete",
-        created_by=principal.user_id,
-    )
-    db.add(user_message)
-    await db.flush()
-    db.add(
-        MessagePart(
-            workspace_id=_ws(principal),
-            message_id=user_message.id,
-            seq=1,
-            kind="text",
-            content=text,
-            trust_level="trusted",
+        await db.execute(
+            select(func.coalesce(func.max(Message.seq), 0)).where(Message.chat_id == chat.id)
         )
-    )
+    ).scalar_one()
+    user_seq = int(seq_value)
+    if record_user:
+        user_seq = int(seq_value) + 1
+        user_message = Message(
+            workspace_id=_ws(principal),
+            chat_id=chat.id,
+            role="user",
+            seq=user_seq,
+            status="complete",
+            created_by=principal.user_id,
+        )
+        db.add(user_message)
+        await db.flush()
+        db.add(
+            MessagePart(
+                workspace_id=_ws(principal),
+                message_id=user_message.id,
+                seq=1,
+                kind="text",
+                content=text,
+                trust_level="trusted",
+            )
+        )
     run = Run(
         workspace_id=_ws(principal),
         kind="chat",
@@ -183,17 +324,26 @@ async def send_message(
         row.tool_key: {"mode": row.mode, "allow_when_tainted": row.allow_when_tainted}
         for row in (
             await db.execute(select(ToolPolicy).where(ToolPolicy.workspace_id == _ws(principal)))
-        ).scalars().all()
+        )
+        .scalars()
+        .all()
     }
     state = {
         "messages": [{"role": "user", "content": text, "trust": "trusted"}],
         "run_id": str(run.id),
         "workspace_id": str(_ws(principal)),
         "trust_level": "trusted",
-        "tool_allowlist": ["smtp.send", "gmail.send_email", "gmail.get_message", "http.request", "sheets.read", "sheets.write", "drive.read"],
+        "tool_allowlist": [
+            "smtp.send",
+            "gmail.send_email",
+            "gmail.get_message",
+            "http.request",
+            "sheets.read",
+            "sheets.write",
+            "drive.read",
+        ],
         "policies": policies,
-        "turns": turns
-        or [{"text": "Hello from Younique.", "tool_calls": []}],
+        "turns": _prepared_turns(text, turns, chat, settings),
         "max_steps": 25,
         "max_tool_calls": 50,
         "budget_micro_usd": 1_000_000_000,
@@ -203,7 +353,9 @@ async def send_message(
     result = await graph.ainvoke(state, config)
     snap = await graph.aget_state(config)
     seq = 0
-    seq = await _emit(db, principal, run.id, seq, "run.started", {"run_id": str(run.id), "chat_id": str(chat.id)})
+    seq = await _emit(
+        db, principal, run.id, seq, "run.started", {"run_id": str(run.id), "chat_id": str(chat.id)}
+    )
     yield sse("run.started", {"run_id": str(run.id), "chat_id": str(chat.id)}, seq)
     interrupts = list(getattr(snap, "interrupts", ()) or ())
     if interrupts:
@@ -242,34 +394,86 @@ async def send_message(
         seq = await _emit(db, principal, run.id, seq, "approval.required", body)
         yield sse("approval.required", body, seq)
         return
+    refusal = refusal_from(result)
+    text_out = refusal or str(result.get("final_text") or "")
+    reasoning = str(result.get("reasoning_text") or "")
+    show_reasoning = chat.reasoning_mode != "off" and bool(reasoning)
+    error_code = "tool_blocked_by_policy" if refusal else result.get("error_code")
     assistant = Message(
         workspace_id=_ws(principal),
         chat_id=chat.id,
         run_id=run.id,
         role="assistant",
-        seq=int(seq_value) + 2,
-        status="complete",
+        seq=user_seq + 1,
+        status="streaming",
+        error_code=str(error_code) if error_code else None,
     )
     db.add(assistant)
     await db.flush()
-    text_out = str(result.get("final_text") or "")
-    db.add(
-        MessagePart(
-            workspace_id=_ws(principal),
-            message_id=assistant.id,
-            seq=1,
-            kind="text",
-            content=text_out,
-            trust_level="trusted",
+    part_seq = 1
+    if show_reasoning:
+        db.add(
+            MessagePart(
+                workspace_id=_ws(principal),
+                message_id=assistant.id,
+                seq=part_seq,
+                kind="reasoning",
+                content=reasoning,
+                trust_level="trusted",
+            )
         )
+        part_seq += 1
+        seq = await _emit(
+            db, principal, run.id, seq, "part.delta", {"kind": "reasoning", "text": reasoning}
+        )
+        yield sse("part.delta", {"kind": "reasoning", "text": reasoning}, seq)
+    text_part = MessagePart(
+        workspace_id=_ws(principal),
+        message_id=assistant.id,
+        seq=part_seq,
+        kind="text",
+        content="",
+        trust_level="trusted",
     )
-    run.status = "succeeded" if result.get("status") != "failed" else "failed"
-    run.finished_at = _now()
-    run.error_code = result.get("error_code")
-    seq = await _emit(db, principal, run.id, seq, "message.created", {"message_id": str(assistant.id), "role": "assistant"})
+    db.add(text_part)
+    await db.flush()
+    seq = await _emit(
+        db,
+        principal,
+        run.id,
+        seq,
+        "message.created",
+        {"message_id": str(assistant.id), "role": "assistant"},
+    )
     yield sse("message.created", {"message_id": str(assistant.id), "role": "assistant"}, seq)
-    seq = await _emit(db, principal, run.id, seq, "part.delta", {"text": text_out})
-    yield sse("part.delta", {"text": text_out}, seq)
+    pace = settings.stream_pace_ms / 1000
+    pieces = _chunks(text_out, 12) if pace else [text_out]
+    stopped = False
+    built = ""
+    for piece in pieces:
+        if await _cancelled(db, run.id):
+            stopped = True
+            break
+        built += piece
+        text_part.content = built
+        seq = await _emit(db, principal, run.id, seq, "part.delta", {"kind": "text", "text": piece})
+        yield sse("part.delta", {"kind": "text", "text": piece}, seq)
+        if pace:
+            await asyncio.sleep(pace)
+    if not stopped and text_out and built != text_out:
+        text_part.content = text_out
+    assistant.status = "stopped" if stopped else "complete"
+    run.status = (
+        "cancelled"
+        if stopped
+        else ("succeeded" if result.get("status") != "failed" and not refusal else "failed")
+    )
+    run.finished_at = _now()
+    run.error_code = "run_cancelled" if stopped else (str(error_code) if error_code else None)
+    if error_code and not stopped:
+        err = {"code": str(error_code), "detail": text_out}
+        seq = await _emit(db, principal, run.id, seq, "error", err)
+        yield sse("error", err, seq)
     price = PriceSnapshot(
         input_micro_usd_per_mtok=0,
         output_micro_usd_per_mtok=0,
@@ -303,12 +507,16 @@ async def send_message(
 
 async def replay_events(db: AsyncSession, run_id: UUID, last_event_id: int) -> list[RunEvent]:
     rows = (
-        await db.execute(
-            select(RunEvent)
-            .where(RunEvent.run_id == run_id, RunEvent.seq > last_event_id)
-            .order_by(RunEvent.seq)
+        (
+            await db.execute(
+                select(RunEvent)
+                .where(RunEvent.run_id == run_id, RunEvent.seq > last_event_id)
+                .order_by(RunEvent.seq)
+            )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     return list(rows)
 
 
@@ -320,11 +528,15 @@ async def decide_approval(
     remember: str | None,
     settings: Settings,
 ) -> Approval:
-    approval = (await db.execute(select(Approval).where(Approval.id == approval_id))).scalar_one_or_none()
+    approval = (
+        await db.execute(select(Approval).where(Approval.id == approval_id))
+    ).scalar_one_or_none()
     if approval is None:
         raise not_found()
     if decision not in {"approve", "reject"}:
-        raise problem(422, "validation_failed", "Validation failed", "Decision must be approve or reject.")
+        raise problem(
+            422, "validation_failed", "Validation failed", "Decision must be approve or reject."
+        )
     if remember == "always" and not fresh_reauth(principal, settings):
         raise reauth_required()
     approval.status = "approved" if decision == "approve" else "rejected"
@@ -355,13 +567,27 @@ async def decide_approval(
             existing.mode = mode
     run = (await db.execute(select(Run).where(Run.id == approval.run_id))).scalar_one()
     if decision == "approve":
-        await get_graph().ainvoke(Command(resume={"decision": "approve"}), {"configurable": {"thread_id": str(run.id)}})
+        resumed = await get_graph().ainvoke(
+            Command(resume={"decision": "approve"}), {"configurable": {"thread_id": str(run.id)}}
+        )
         run.status = "succeeded"
+        await _record_assistant(db, principal, run, str(resumed.get("final_text") or "Sent."))
     else:
-        await get_graph().ainvoke(Command(resume={"decision": "reject"}), {"configurable": {"thread_id": str(run.id)}})
+        await get_graph().ainvoke(
+            Command(resume={"decision": "reject"}), {"configurable": {"thread_id": str(run.id)}}
+        )
         run.status = "failed"
         run.error_code = "approval_rejected"
+        await _record_assistant(db, principal, run, "The action was not approved.")
     run.finished_at = _now()
+    await _emit(
+        db,
+        principal,
+        run.id,
+        0,
+        "run.completed",
+        {"run_id": str(run.id), "status": run.status},
+    )
     await write_audit(
         db,
         principal,
@@ -387,7 +613,7 @@ async def save_provider_key(
     if not fresh_reauth(principal, settings):
         raise reauth_required()
     if settings.llm_mode == "fake":
-        valid = secret == "valid-key" or secret.startswith("sk-")
+        valid = secret.startswith("valid-key") or secret.startswith("sk-")
     else:
         valid = len(secret) > 8
     if not valid:
@@ -429,7 +655,91 @@ async def save_provider_key(
     )
     db.add(row)
     await db.flush()
-    await write_audit(db, principal, action="provider_key.create", resource_type="provider_key", resource_id=row.id, outcome="allowed")
+    await write_audit(
+        db,
+        principal,
+        action="provider_key.create",
+        resource_type="provider_key",
+        resource_id=row.id,
+        outcome="allowed",
+    )
+    return row
+
+
+async def rotate_provider_key(
+    db: AsyncSession,
+    principal: Principal,
+    key_id: UUID,
+    secret: str,
+    settings: Settings,
+) -> ProviderKey:
+    if not fresh_reauth(principal, settings):
+        raise reauth_required()
+    row = (
+        await db.execute(
+            select(ProviderKey).where(
+                ProviderKey.id == key_id, ProviderKey.workspace_id == _ws(principal)
+            )
+        )
+    ).scalar_one_or_none()
+    if row is None or row.status == "revoked":
+        raise not_found()
+    if settings.llm_mode == "fake":
+        valid = secret.startswith("valid-key") or secret.startswith("sk-")
+    else:
+        valid = len(secret) > 8
+    if not valid:
+        raise problem(
+            422,
+            "validation_failed",
+            "Validation failed",
+            "The provider rejected this key. Nothing was stored.",
+        )
+    dek_row = await _dek(db, _ws(principal), settings)
+    row.key_ct = encrypt(
+        dek_row[0],
+        secret.encode(),
+        workspace_id=_ws(principal),
+        secret_kind="provider_key",
+        row_id=row.id,
+        key_version=dek_row[1].version,
+    )
+    row.last4 = secret[-4:]
+    row.encryption_key_id = dek_row[1].id
+    row.key_version = dek_row[1].version
+    row.status = "active"
+    row.last_validated_at = _now()
+    await write_audit(
+        db,
+        principal,
+        action="provider_key.rotate",
+        resource_type="provider_key",
+        resource_id=row.id,
+        outcome="allowed",
+    )
+    return row
+
+
+async def revoke_provider_key(db: AsyncSession, principal: Principal, key_id: UUID) -> ProviderKey:
+    row = (
+        await db.execute(
+            select(ProviderKey).where(
+                ProviderKey.id == key_id, ProviderKey.workspace_id == _ws(principal)
+            )
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        raise not_found()
+    row.status = "revoked"
+    row.key_ct = b""
+    await write_audit(
+        db,
+        principal,
+        action="provider_key.revoke",
+        resource_type="provider_key",
+        resource_id=row.id,
+        outcome="allowed",
+    )
     return row
 
 
@@ -460,7 +770,9 @@ async def record_usage(
     request_id: str,
 ) -> UsageEvent | None:
     existing = (
-        await db.execute(select(UsageRequestDedupe).where(UsageRequestDedupe.request_id == request_id))
+        await db.execute(
+            select(UsageRequestDedupe).where(UsageRequestDedupe.request_id == request_id)
+        )
     ).scalar_one_or_none()
     if existing is not None:
         return None
@@ -505,58 +817,28 @@ async def ingest_upload(
     declared_mime: str,
     data: bytes,
     timeout_s: float = 30,
+    settings: Settings | None = None,
+    chat_id: UUID | None = None,
 ) -> ArtifactVersion:
-    digest = hashlib.sha256(data).hexdigest()
-    existing = (
-        await db.execute(
-            select(ArtifactVersion).where(
-                ArtifactVersion.workspace_id == _ws(principal),
-                ArtifactVersion.sha256 == digest,
-            )
-        )
-    ).scalar_one_or_none()
-    if existing is not None:
-        return existing
-    artifact = Artifact(workspace_id=_ws(principal), name=name, origin="uploaded", total_bytes=len(data), created_by=principal.user_id)
-    db.add(artifact)
-    await db.flush()
-    result = scan_bytes(data, declared_mime=declared_mime, name=name, timeout_s=timeout_s)
-    status = advance("scanning", result)
-    version = ArtifactVersion(
-        workspace_id=_ws(principal),
-        artifact_id=artifact.id,
-        version=1,
-        gcs_bucket="uploads" if status != "clean" else "artifacts",
-        gcs_object=f"{_ws(principal)}/{artifact.id}",
+    from younique.core.config import get_settings
+    from younique.services.artifacts_flow import ingest_inline
+
+    return await ingest_inline(
+        db,
+        principal,
+        name=name,
         declared_mime=declared_mime,
-        detected_mime=result.detected_mime,
-        byte_size=len(data),
-        sha256=digest,
-        status=status,
+        data=data,
+        settings=settings or get_settings(),
+        timeout_s=timeout_s,
+        chat_id=chat_id,
     )
-    db.add(version)
-    await db.flush()
-    db.add(
-        ArtifactScan(
-            workspace_id=_ws(principal),
-            artifact_version_id=version.id,
-            engine="builtin",
-            engine_version="1",
-            result="error" if status == "failed" else status,
-            signature=result.signature,
-        )
-    )
-    artifact.current_version_id = version.id
-    return version
 
 
-def download_version(version: ArtifactVersion) -> dict[str, object]:
-    if version.status != "clean":
-        raise artifact_not_clean(version.status)
-    return {
-        "url": f"https://downloads.younique.local/{version.gcs_object}",
-        "expires_in": 300,
-    }
+def download_version(version: ArtifactVersion, name: str = "download") -> dict[str, object]:
+    from younique.services.artifacts_flow import download_payload
+
+    return download_payload(version, name=name)
 
 
 async def create_share(
@@ -582,14 +864,23 @@ async def create_share(
     )
     db.add(link)
     await db.flush()
-    await write_audit(db, principal, action="share.create", resource_type=resource_type, resource_id=resource_id, outcome="allowed")
+    await write_audit(
+        db,
+        principal,
+        action="share.create",
+        resource_type=resource_type,
+        resource_id=resource_id,
+        outcome="allowed",
+    )
     return link, token
 
 
 async def resolve_share(db: AsyncSession, token: str, password: str | None) -> dict[str, object]:
     from sqlalchemy import text
 
-    await db.execute(text("SELECT set_config('app.share_token_hash', :v, true)"), {"v": sha256_hex(token)})
+    await db.execute(
+        text("SELECT set_config('app.share_token_hash', :v, true)"), {"v": sha256_hex(token)}
+    )
     link = (
         await db.execute(select(ShareLink).where(ShareLink.token_hash == sha256_hex(token)))
     ).scalar_one_or_none()
@@ -599,22 +890,34 @@ async def resolve_share(db: AsyncSession, token: str, password: str | None) -> d
         raise problem(403, "share_link_expired", "Share link expired", "This link has expired.")
     if link.password_hash:
         if not password:
-            raise problem(403, "password_required", "Password required", "This link requires a password.")
+            raise problem(
+                403, "password_required", "Password required", "This link requires a password."
+            )
         try:
             _HASHER.verify(link.password_hash, password)
         except Exception as exc:
-            raise problem(403, "password_required", "Password required", "The password is incorrect.") from exc
+            raise problem(
+                403, "password_required", "Password required", "The password is incorrect."
+            ) from exc
     await apply_tenant(db, workspace_id=link.workspace_id, user_id=None, bootstrap=True)
     chat = (await db.execute(select(Chat).where(Chat.id == link.resource_id))).scalar_one_or_none()
     messages = []
     if chat is not None:
         rows = (
-            await db.execute(select(Message).where(Message.chat_id == chat.id, Message.archived_at.is_(None)))
-        ).scalars().all()
+            (
+                await db.execute(
+                    select(Message).where(Message.chat_id == chat.id, Message.archived_at.is_(None))
+                )
+            )
+            .scalars()
+            .all()
+        )
         for message in rows:
             parts = (
-                await db.execute(select(MessagePart).where(MessagePart.message_id == message.id))
-            ).scalars().all()
+                (await db.execute(select(MessagePart).where(MessagePart.message_id == message.id)))
+                .scalars()
+                .all()
+            )
             visible = []
             for part in parts:
                 if part.kind == "reasoning" and not link.include_reasoning:
@@ -695,7 +998,39 @@ def catalogue() -> list[dict[str, object]]:
 
 
 def bundle_tools(connector_key: str, bundles: set[str]) -> list[str]:
-    return [str(getattr(tool, "__tool_key__", "")) for tool in tools_for_bundles(connector_key, bundles)]
+    return [
+        str(getattr(tool, "__tool_key__", "")) for tool in tools_for_bundles(connector_key, bundles)
+    ]
+
+
+async def _record_assistant(db: AsyncSession, principal: Principal, run: Run, text: str) -> None:
+    if run.chat_id is None:
+        return
+    seq_value = (
+        await db.execute(
+            select(func.coalesce(func.max(Message.seq), 0)).where(Message.chat_id == run.chat_id)
+        )
+    ).scalar_one()
+    assistant = Message(
+        workspace_id=_ws(principal),
+        chat_id=run.chat_id,
+        run_id=run.id,
+        role="assistant",
+        seq=int(seq_value) + 1,
+        status="complete",
+    )
+    db.add(assistant)
+    await db.flush()
+    db.add(
+        MessagePart(
+            workspace_id=_ws(principal),
+            message_id=assistant.id,
+            seq=1,
+            kind="text",
+            content=text,
+            trust_level="trusted",
+        )
+    )
 
 
 async def _emit(
@@ -721,12 +1056,20 @@ async def _emit(
     return seq
 
 
-async def _dek(db: AsyncSession, workspace_id: UUID, settings: Settings) -> tuple[bytes, EncryptionKey]:
+async def _dek(
+    db: AsyncSession, workspace_id: UUID, settings: Settings
+) -> tuple[bytes, EncryptionKey]:
     row = (
-        await db.execute(
-            select(EncryptionKey).where(EncryptionKey.workspace_id == workspace_id).order_by(EncryptionKey.version.desc())
+        (
+            await db.execute(
+                select(EncryptionKey)
+                .where(EncryptionKey.workspace_id == workspace_id)
+                .order_by(EncryptionKey.version.desc())
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if row is None:
         raise not_found()
     cached = cached_dek(workspace_id, row.version)
@@ -751,8 +1094,16 @@ def _user(principal: Principal) -> UUID:
 
 async def price_for(db: AsyncSession, model_id: UUID) -> PriceSnapshot:
     row = (
-        await db.execute(select(ModelPrice).where(ModelPrice.model_id == model_id).order_by(ModelPrice.effective_from.desc()))
-    ).scalars().first()
+        (
+            await db.execute(
+                select(ModelPrice)
+                .where(ModelPrice.model_id == model_id)
+                .order_by(ModelPrice.effective_from.desc())
+            )
+        )
+        .scalars()
+        .first()
+    )
     if row is None:
         raise not_found()
     return PriceSnapshot(
@@ -768,13 +1119,17 @@ async def list_models(db: AsyncSession, principal: Principal, available: bool) -
     if not available:
         return rows
     keys = (
-        await db.execute(
-            select(ProviderKey.provider_id).where(
-                ProviderKey.workspace_id == _ws(principal),
-                ProviderKey.status == "active",
+        (
+            await db.execute(
+                select(ProviderKey.provider_id).where(
+                    ProviderKey.workspace_id == _ws(principal),
+                    ProviderKey.status == "active",
+                )
             )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     allowed = set(keys)
     return [row for row in rows if row.provider_id in allowed or row.model_ref == "fake-chat"]
 

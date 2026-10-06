@@ -8,7 +8,9 @@ type Row = { id: string; is_current: boolean; revoked_at: string | null };
 export default function SessionsPage() {
   const [rows, setRows] = useState<Row[]>([]);
   useEffect(() => {
-    void api<{ data: Row[] }>("/api/v1/me/sessions").then((body) => setRows(body.data));
+    void api<{ data: Row[] }>("/api/v1/me/sessions").then((body) =>
+      setRows(body.data),
+    );
   }, []);
   return (
     <main>
@@ -19,8 +21,14 @@ export default function SessionsPage() {
           <button
             type="button"
             onClick={() => {
-              void api(`/api/v1/me/sessions/${row.id}:revoke`, { method: "POST" }).then(() => {
-                setRows((current) => current.map((item) => (item.id === row.id ? { ...item, revoked_at: "now" } : item)));
+              void api(`/api/v1/me/sessions/${row.id}:revoke`, {
+                method: "POST",
+              }).then(() => {
+                setRows((current) =>
+                  current.map((item) =>
+                    item.id === row.id ? { ...item, revoked_at: "now" } : item,
+                  ),
+                );
               });
             }}
           >

@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://gmail.googleapis.com/gmail/v1/users/me/messages/bad"
+  },
+  "response": {
+    "status": 200,
+    "text": "not-json"
+  }
+}

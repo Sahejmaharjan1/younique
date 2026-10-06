@@ -42,10 +42,18 @@ def decide(principal: Principal, action: str, resource: ResourceView) -> Decisio
         code = "session_revoked" if principal.revoked else "unauthenticated"
         return _deny(401, code)
     if principal.archived_membership:
-        if resource.workspace_id and principal.workspace_id and resource.workspace_id != principal.workspace_id:
+        if (
+            resource.workspace_id
+            and principal.workspace_id
+            and resource.workspace_id != principal.workspace_id
+        ):
             return _deny(404, "not_found")
         return _deny(403, "permission_denied")
-    if resource.workspace_id and principal.workspace_id and resource.workspace_id != principal.workspace_id:
+    if (
+        resource.workspace_id
+        and principal.workspace_id
+        and resource.workspace_id != principal.workspace_id
+    ):
         if principal.kind != "share_link":
             return _deny(404, "not_found")
     if principal.kind == "share_link" and (
@@ -64,22 +72,43 @@ def decide(principal: Principal, action: str, resource: ResourceView) -> Decisio
         if _could_read(principal, resource):
             return _deny(410, "archived")
         return _deny(404, "not_found")
-    if resource.type == "artifact" and resource.status not in {None, "clean"} and action in {"read", "download"}:
+    if (
+        resource.type == "artifact"
+        and resource.status not in {None, "clean"}
+        and action in {"read", "download"}
+    ):
         if _could_read(principal, resource):
             return _deny(409, "artifact_not_clean")
         return _deny(404, "not_found")
     if principal.kind == "agent" and action == "execute_tool":
-        return _ok() if _agent_tool_allowed(principal, resource) else _deny(403, "permission_denied")
-    if principal.workspace_role == "guest" and action in {"create", "run", "execute_tool", "update", "delete"}:
+        return (
+            _ok() if _agent_tool_allowed(principal, resource) else _deny(403, "permission_denied")
+        )
+    if principal.workspace_role == "guest" and action in {
+        "create",
+        "run",
+        "execute_tool",
+        "update",
+        "delete",
+    }:
         return _deny(403, "permission_denied")
-    if principal.kind == "pat" and "chat.read" in principal.scopes and action not in {"read", "list"}:
+    if (
+        principal.kind == "pat"
+        and "chat.read" in principal.scopes
+        and action not in {"read", "list"}
+    ):
         return _deny(403, "permission_denied")
     if principal.kind == "mcp_client" and action == "execute_tool":
         if "tools.invoke" in principal.scopes:
             return _ok()
         return _deny(403, "permission_denied")
     if resource.type in {"audit_log", "budget"}:
-        if principal.workspace_role in {"owner", "admin"} and action in {"read", "list", "update", "create"}:
+        if principal.workspace_role in {"owner", "admin"} and action in {
+            "read",
+            "list",
+            "update",
+            "create",
+        }:
             if resource.type == "budget" or action in {"read", "list"}:
                 return _ok()
             if principal.workspace_role == "owner" or action != "delete":
@@ -112,7 +141,10 @@ def decide(principal: Principal, action: str, resource: ResourceView) -> Decisio
     if action in {"read", "list"}:
         return _ok() if rank >= _RANK["viewer"] else _missing(principal, resource)
     if action == "create":
-        if principal.workspace_role in {"owner", "admin", "member"} and principal.workspace_id == resource.workspace_id:
+        if (
+            principal.workspace_role in {"owner", "admin", "member"}
+            and principal.workspace_id == resource.workspace_id
+        ):
             return _ok()
         return _missing(principal, resource)
     if action in {"update", "share", "run", "execute_tool", "decide_approval"}:

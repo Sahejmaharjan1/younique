@@ -7,7 +7,11 @@ env_path = root / ".env"
 if not env_path.exists():
     env_path.write_text((root / ".env.example").read_text())
 text = env_path.read_text()
-if "MASTER_KEY=\n" in text or "MASTER_KEY=" not in text or text.split("MASTER_KEY=", 1)[1].splitlines()[0] == "":
+if (
+    "MASTER_KEY=\n" in text
+    or "MASTER_KEY=" not in text
+    or text.split("MASTER_KEY=", 1)[1].splitlines()[0] == ""
+):
     key = base64.b64encode(os.urandom(32)).decode()
     if "MASTER_KEY=" in text:
         lines = []

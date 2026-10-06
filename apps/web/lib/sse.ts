@@ -40,9 +40,15 @@ export function parseFrame(frame: string): SseEvent | null {
   return { id, event, data: data.join("\n") };
 }
 
-export async function resume(runId: string, lastEventId: string): Promise<Response> {
-  const response = await fetch(`/api/v1/runs/${runId}/events?last_event_id=${lastEventId}`, {
-    headers: { accept: "text/event-stream" },
-  });
+export async function resume(
+  runId: string,
+  lastEventId: string,
+): Promise<Response> {
+  const response = await fetch(
+    `/api/v1/runs/${runId}/events?last_event_id=${lastEventId}`,
+    {
+      headers: { accept: "text/event-stream" },
+    },
+  );
   return response;
 }

@@ -176,7 +176,9 @@ async def _bootstrap(
         timezone="UTC",
         preferences={"reasoning_default": "off", "memory_write_mode": "append"},
     )
-    workspace = Workspace(id=workspace_id, slug=f"ws-{workspace_id.hex[:10]}", name=f"{name}'s workspace")
+    workspace = Workspace(
+        id=workspace_id, slug=f"ws-{workspace_id.hex[:10]}", name=f"{name}'s workspace"
+    )
     db.add(user)
     db.add(workspace)
     await db.flush()
@@ -266,13 +268,17 @@ async def _bootstrap(
 
 async def _workspace_for(db: AsyncSession, user: User) -> Workspace:
     members = (
-        await db.execute(
-            select(WorkspaceMember).where(
-                WorkspaceMember.user_id == user.id,
-                WorkspaceMember.archived_at.is_(None),
+        (
+            await db.execute(
+                select(WorkspaceMember).where(
+                    WorkspaceMember.user_id == user.id,
+                    WorkspaceMember.archived_at.is_(None),
+                )
             )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     if not members:
         raise unauthenticated("The account has no workspace.")
     preferred = user.default_workspace_id or members[0].workspace_id
@@ -281,7 +287,9 @@ async def _workspace_for(db: AsyncSession, user: User) -> Workspace:
     return workspace
 
 
-async def _principal(db: AsyncSession, user: User, workspace: Workspace, session: Session) -> Principal:
+async def _principal(
+    db: AsyncSession, user: User, workspace: Workspace, session: Session
+) -> Principal:
     member = (
         await db.execute(
             select(WorkspaceMember).where(
@@ -393,19 +401,27 @@ def _role(value: str) -> Literal["owner", "admin", "member", "guest"]:
 
 async def missing_consents(db: AsyncSession, user_id: UUID) -> list[dict[str, object]]:
     docs = (
-        await db.execute(
-            select(ConsentDocument).where(
-                ConsentDocument.is_required.is_(True),
-                ConsentDocument.effective_at <= _now(),
+        (
+            await db.execute(
+                select(ConsentDocument).where(
+                    ConsentDocument.is_required.is_(True),
+                    ConsentDocument.effective_at <= _now(),
+                )
             )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     accepted = set(
         (
             await db.execute(
-                select(ConsentAcceptance.consent_document_id).where(ConsentAcceptance.user_id == user_id)
+                select(ConsentAcceptance.consent_document_id).where(
+                    ConsentAcceptance.user_id == user_id
+                )
             )
-        ).scalars().all()
+        )
+        .scalars()
+        .all()
     )
     required: list[dict[str, object]] = []
     for doc in docs:
@@ -420,6 +436,36 @@ async def missing_consents(db: AsyncSession, user_id: UUID) -> list[dict[str, ob
                 }
             )
     return required
+
+
+async def list_accounts(db: AsyncSession, principal: Principal) -> list[dict[str, object]]:
+    if principal.session_id is None:
+        return []
+    current = (
+        await db.execute(select(Session).where(Session.id == principal.session_id))
+    ).scalar_one_or_none()
+    if current is None:
+        return []
+    rows = (
+        (
+            await db.execute(
+                select(Session).where(
+                    Session.session_group_id == current.session_group_id,
+                    Session.revoked_at.is_(None),
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return [
+        {
+            "user_id": str(row.user_id),
+            "session_id": str(row.id),
+            "is_current": row.user_id == principal.user_id,
+        }
+        for row in rows
+    ]
 
 
 def fresh_reauth(principal: Principal, settings: Settings) -> bool:

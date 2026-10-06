@@ -25,13 +25,23 @@ def _estimate(message: dict[str, Any]) -> int:
 
 
 def _drop_orphans(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    call_ids = {m.get("tool_call_id") for m in messages if m.get("role") == "assistant" and m.get("tool_call_id")}
-    result_ids = {m.get("tool_call_id") for m in messages if m.get("role") == "tool" and m.get("tool_call_id")}
+    call_ids = {
+        m.get("tool_call_id")
+        for m in messages
+        if m.get("role") == "assistant" and m.get("tool_call_id")
+    }
+    result_ids = {
+        m.get("tool_call_id") for m in messages if m.get("role") == "tool" and m.get("tool_call_id")
+    }
     paired = call_ids & result_ids
     cleaned: list[dict[str, Any]] = []
     for message in messages:
         tool_call_id = message.get("tool_call_id")
-        if tool_call_id and tool_call_id not in paired and message.get("role") in {"assistant", "tool"}:
+        if (
+            tool_call_id
+            and tool_call_id not in paired
+            and message.get("role") in {"assistant", "tool"}
+        ):
             continue
         cleaned.append(message)
     return cleaned

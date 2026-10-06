@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from uuid import UUID
 
 from sqlalchemy import text
@@ -62,7 +63,10 @@ async def apply_tenant(
     await set_local(session, "app.bootstrap", "on" if bootstrap else "off")
 
 
-async def system_session(workspace_id: UUID, user_id: UUID | None = None) -> AsyncIterator[AsyncSession]:
+@asynccontextmanager
+async def system_session(
+    workspace_id: UUID, user_id: UUID | None = None
+) -> AsyncIterator[AsyncSession]:
     maker = get_sessionmaker()
     async with maker() as session, session.begin():
         await apply_tenant(session, workspace_id=workspace_id, user_id=user_id, bootstrap=True)

@@ -27,11 +27,11 @@ test-authz:
 lint:
 	$(UV) ruff check src tests
 	$(UV) ruff format --check src tests
-	$(PNPM) exec prettier --check "apps/**/*.{ts,tsx,css,json}" "packages/**/*.{ts,tsx,json}" "docs/site/**/*.mdx" || true
+	$(PNPM) exec prettier --check "apps/**/*.{ts,tsx,css,json}" "packages/**/*.{ts,tsx,json}" "docs/site/**/*.mdx"
 	$(PNPM) --filter @younique/web lint
-	python3 scripts/check_forbidden_imports.py
-	python3 scripts/check_money.py
-	python3 scripts/check_routes.py
+	$(UV) python ../scripts/check_forbidden_imports.py
+	$(UV) python ../scripts/check_money.py
+	$(UV) python ../scripts/check_routes.py
 
 types:
 	$(UV) mypy src
