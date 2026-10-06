@@ -1,6 +1,6 @@
 [project]
 name = "younique-sdk"
-version = "0.1.0"
+version = "0.2.0"
 description = "Apache-2.0 connector SDK for Younique"
 requires-python = ">=3.12"
 license = "Apache-2.0"
